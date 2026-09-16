@@ -1,8 +1,8 @@
 # Step 1 — ONNX Model Validation
 
 ## Current status
-2026-Sept-16
-The ONNX model works technically on the local CPU. Prediction quality still needs testing across all six defect categories.
+**2026-Sept-16**
+The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing is complete; five defect categories remain.
 
 ## Environment
 - Date: 2026-09-16
@@ -34,12 +34,27 @@ The ONNX model works technically on the local CPU. Prediction quality still need
 
 The mask covers a large connected region. Detailed boundary accuracy has not yet been assessed against the annotation.
 
+## Phase 2 — Prediction-quality validation
+### Crazing — completed
+
+| Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `crazing_151.jpg` | Crazing | 1 | None | Partial overlap; possible missed area | 26.82 ms |
+| `crazing_153.jpg` | Crazing | 1 | None | Good but partial overlap | 23.43 ms |
+| `crazing_166.jpg` | Crazing | 3 | None | Relevant areas detected; localization fragmented | 22.57 ms |
+| `crazing_240.jpg` | Crazing | 1 | None | Broad, coarse localization | 23.30 ms |
+| `crazing_241.jpg` | Crazing | 1 | None | Broad, coarse localization | 22.20 ms |
+
+- Correct Crazing activation: 5/5
+- False class activations: 0
+- Average CPU inference time: 23.66 ms
+- Localization quality: Mixed; masks can be partial, fragmented or overly broad.
+- Category decision: Usable for category-level detection. Precise segmentation accuracy is not yet established.
+
 ## Current decision
 
 **Technical result: passed.**
-
 The model loads, runs on CPU and produces usable binary masks.
 
 **Quality decision: pending.**
-
 Test 3–5 images from each defect category before deciding whether the model is suitable for the demo.
