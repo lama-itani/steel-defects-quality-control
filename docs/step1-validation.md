@@ -2,7 +2,8 @@
 
 ## Current status
 **2026-Sept-16**
-The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing, Patches and Inclusion are complete; three defect categories remain.
+The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is complete for all six defect categories.
+
 ## Environment
 - Date: 2026-09-16
 - Operating system: macOS 26.6.2
@@ -81,10 +82,71 @@ The mask covers a large connected region. Detailed boundary accuracy has not yet
 - Localization quality: Good overall, with broad boundaries on some images.
 - Category decision: Usable for category detection and approximate localization.
 
+### Pitted surface — completed
+| Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `pitted_surface_18.jpg` | Pitted surface | 1 | None | Broad coverage of distributed pitting | 24.75 ms |
+| `pitted_surface_64.jpg` | Pitted surface | 1 | None | Broad coverage of distributed pitting | 27.25 ms |
+| `pitted_surface_110.jpg` | Pitted surface | 1 | None | Broad coverage of distributed pitting | 22.52 ms |
+| `pitted_surface_125.jpg` | Pitted surface | 2 | None | Partial coverage; mainly upper regions detected | 21.78 ms |
+| `pitted_surface_175.jpg` | Pitted surface | 1 | None | Broad coverage of dense pitting | 24.28 ms |
+
+- Correct Pitted surface activation: 5/5
+- False class activations: 0
+- Average CPU inference time: 24.12 ms
+- Localization quality: Coarse and broad; `pitted_surface_125.jpg` is partial.
+- Category decision: Usable for category detection, but not precise individual-pit localization.
+
+### Rolled-in scale — completed
+| Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `rolled-in_scale_14.jpg` | Rolled-in scale | 1 | None | Good overlap with the vertical defect chain; broad boundary | 55.67 ms initial; 21.07–23.55 ms stable repeats |
+| `rolled-in_scale_80.jpg` | Rolled-in scale | 1 | None | Broad coverage of the main right-side defect band | 23.78 ms |
+| `rolled-in_scale_138.jpg` | Rolled-in scale | 1 | None | Main central defect cluster detected | 23.75 ms |
+| `rolled-in_scale_176.jpg` | Rolled-in scale | 1 | None | Main cluster detected; possible isolated misses | 22.77 ms |
+| `rolled-in_scale_216.jpg` | Rolled-in scale | 1 | None | Broad coverage of the diagonal defect cluster | 22.89 ms |
+
+- Correct Rolled-in scale activation: 5/5
+- False class activations: 0
+- Stable CPU inference range: 21.07–23.78 ms
+- Representative average: 23.13 ms, using the stable repeated average for `rolled-in_scale_14.jpg`
+- Timing note: Transient warm-up readings between 34.90 and 73.59 ms were also observed.
+- Localization quality: Good approximate localization, with broad boundaries.
+- Category decision: Usable for category detection and approximate localization.
+
+### Scratches — completed
+
+| Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `scratches_86.jpg` | Scratches | 3 | None | Three prominent scratches detected; possible faint miss | 26.18 ms |
+| `scratches_195.jpg` | Scratches | 1 | None | Main scratch detected; possible thin secondary miss | 24.29 ms |
+| `scratches_264.jpg` | Scratches | 1 | None | Multiple scratches merged into one broad region | 23.68 ms |
+| `scratches_286.jpg` | Scratches | 1 | None | Good overlap with the main horizontal scratch | 28.32 ms |
+| `scratches_300.jpg` | Scratches | 1 | None | Upper scratches detected as one merged region | 24.54 ms |
+
+- Correct Scratches activation: 5/5
+- False class activations: 0
+- Average CPU inference time: 25.40 ms
+- Localization quality: Good approximate localization; some scratches are merged or possibly missed.
+- Category decision: Usable for category detection and approximate localization.
+
+### Phase 2 summary
+
+- Held-out images assessed: 29
+- Expected category activated: 29/29
+- Images with a false class activation: 1/29
+- False activation: Pitted surface on `patches_274.jpg`
+- Stable CPU inference was generally between 21 and 30 ms.
+- Localization is approximate. Masks can be broad, fragmented, merged or partial.
+- Precise segmentation accuracy is not established because the training annotations use bounding boxes.
+
+
 ## Current decision
-
 **Technical result: passed.**
-The model loads, runs on CPU and produces usable binary masks.
+The model loads correctly, runs on CPU and satisfies its input/output contract.
 
-**Quality decision: pending.**
-Test 3–5 images from each defect category before deciding whether the model is suitable for the demo.
+**Quality result: passed for the demo, with limitations.**
+The expected category activated on all 29 reviewed images. One cross-class false activation occurred. Localization is suitable for an approximate visual indication, but not for claiming precise defect boundaries.
+
+**Final Step 1 decision: usable.**
+The model can proceed to Cloudera CPU validation. It should not yet be used for automatic production rejection decisions.
