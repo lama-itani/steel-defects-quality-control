@@ -2,7 +2,7 @@
 
 ## Current status
 **2026-Sept-16**
-The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing is complete; five defect categories remain.
+The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing and Patches are complete; four defect categories remain.
 
 ## Environment
 - Date: 2026-09-16
@@ -36,7 +36,6 @@ The mask covers a large connected region. Detailed boundary accuracy has not yet
 
 ## Phase 2 — Prediction-quality validation
 ### Crazing — completed
-
 | Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
 |---|---|---:|---|---|---:|
 | `crazing_151.jpg` | Crazing | 1 | None | Partial overlap; possible missed area | 26.82 ms |
@@ -50,6 +49,22 @@ The mask covers a large connected region. Detailed boundary accuracy has not yet
 - Average CPU inference time: 23.66 ms
 - Localization quality: Mixed; masks can be partial, fragmented or overly broad.
 - Category decision: Usable for category-level detection. Precise segmentation accuracy is not yet established.
+
+### Patches — completed
+| Image | Detected categories | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `patches_28.jpg` | Patches | Patches: 3 | None | Good overlap with three visible patch regions | 23.94 ms |
+| `patches_63.jpg` | Patches | Patches: 1 | None | Good overlap with the main visible patch | 22.60 ms |
+| `patches_128.jpg` | Patches | Patches: 2 | None | Good overlap with two visible patch regions | 29.53 ms |
+| `patches_151.jpg` | Patches | Patches: 2 | None | Good overlap; boundaries are broad | 24.31 ms |
+| `patches_274.jpg` | Patches, Pitted surface | Patches: 1; Pitted surface: 1 | Pitted surface | Patch localization is partial; small probable false positive | 23.14 ms |
+
+- Correct Patches activation: 5/5
+- False class activations: 1/5 images
+- False activation: One Pitted surface region on `patches_274.jpg`
+- Average CPU inference time: 24.70 ms
+- Localization quality: Good overall; `patches_274.jpg` is partial.
+- Category decision: Usable for category-level detection. Monitor cross-class false activations.
 
 ## Current decision
 
