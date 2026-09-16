@@ -1,0 +1,12 @@
+# Documenting model details
+- Model name: Unet.onnx
+- Original repository URL: https://github.com/siddhartamukherjee/NEU-DET-Steel-Surface-Defect-Detection
+- Input: [1, 3, 128, 128], FP32
+- Output: [1, 6, 128, 128], FP32
+- ONNX Opset: 11
+- ONNX graph validation: passed
+- Reported architecture: U-Net with ResNet34 encoder
+- Local status: loads and runs successfully with ONNX Runtime
+- CPU inference time observed: 21.98–23.42 ms across two runs
+- Model file location during local testing: model/Unet.onnx
+- Current licence status: not confirmed

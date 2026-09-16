@@ -1,0 +1,21 @@
+# Python
+.venv*/
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Credentials
+.env
+*.pem
+*.key
+
+# Model and test data
+model/*.onnx
+data/*.jpg
+data/*.jpeg
+data/*.png
+
+# Generated results
+outputs/
