@@ -2,8 +2,7 @@
 
 ## Current status
 **2026-Sept-16**
-The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing and Patches are complete; four defect categories remain.
-
+The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is in progress. Crazing, Patches and Inclusion are complete; three defect categories remain.
 ## Environment
 - Date: 2026-09-16
 - Operating system: macOS 26.6.2
@@ -65,6 +64,22 @@ The mask covers a large connected region. Detailed boundary accuracy has not yet
 - Average CPU inference time: 24.70 ms
 - Localization quality: Good overall; `patches_274.jpg` is partial.
 - Category decision: Usable for category-level detection. Monitor cross-class false activations.
+
+### Inclusion — completed
+| Image | Detected category | Retained regions | False class activations | Visual assessment | CPU inference |
+|---|---|---:|---|---|---:|
+| `inclusion_161.jpg` | Inclusion | 1 | None | Correct area; broad boundary | 64.60 ms initial; 23.31 and 23.01 ms repeated |
+| `inclusion_169.jpg` | Inclusion | 2 | None | Good overlap with both visible regions | 26.15 ms |
+| `inclusion_195.jpg` | Inclusion | 1 | None | Good overlap with the faint central defect | 25.70 ms |
+| `inclusion_263.jpg` | Inclusion | 1 | None | Good overlap; slightly broad boundary | 25.64 ms |
+
+- Correct Inclusion activation: 4/4
+- False class activations: 0
+- Typical CPU inference range: 23.01–26.15 ms
+- Representative average: 25.16 ms, using the repeated average for `inclusion_161.jpg`
+- Timing note: The initial 64.60 ms result was not reproduced.
+- Localization quality: Good overall, with broad boundaries on some images.
+- Category decision: Usable for category detection and approximate localization.
 
 ## Current decision
 
