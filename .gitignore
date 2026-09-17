@@ -19,3 +19,10 @@ data/*.png
 
 # Generated results
 outputs/
+
+# Cloudera AI and Jupyter runtime files
+.Rprofile
+.cache/
+.local/
+.ipynb_checkpoints/
+.lesshst

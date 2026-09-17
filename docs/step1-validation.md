@@ -140,6 +140,56 @@ The mask covers a large connected region. Detailed boundary accuracy has not yet
 - Localization is approximate. Masks can be broad, fragmented, merged or partial.
 - Precise segmentation accuracy is not established because the training annotations use bounding boxes.
 
+## Phase 3 — Cloudera AI CPU validation
+
+### Environment
+
+- Cloudera AI Workbench
+- Runtime: JupyterLab, Python 3.10, Standard edition 2026.08
+- Resources: 2 vCPU, 4 GiB memory
+- Spark: disabled
+- GPU: disabled
+- Architecture: x86_64
+- Git commit tested: `2288520`
+- Model SHA-256: `90defe5e1199ac4265916a362b47f6d0ecc24430c97fd047851445842da53a04`
+- NumPy: 2.2.6
+- ONNX: 1.22.0
+- ONNX Runtime: 1.23.2
+- OpenCV package: 5.0.0.93
+- Active inference provider: `CPUExecutionProvider`
+
+### Validation results
+
+- Model contract tests: 2/2 passed
+- Held-out images tested: 29
+- Expected category matched local results: 29/29
+- Retained region counts matched local results: 29/29
+- False activation matched local results: Pitted surface on `patches_274.jpg`
+- Representative overlays matched the local qualitative assessment.
+- No preprocessing, BGR channel-order, resizing, normalization or post-processing differences were found.
+- The model ran successfully across Apple M3 locally and x86_64 in Cloudera.
+
+### Performance
+
+- Average CPU inference: 11.58 ms
+- Median CPU inference: 11.61 ms
+- CPU inference range: 6.99–13.41 ms
+- Model-loading time: 343.27 ms
+- Peak process memory after model loading: 276.36 MiB
+- Peak memory increase during model loading: 237.79 MiB
+
+The Cloudera runtime was faster than the stable local readings, which were generally between 21 and 30 ms.
+
+### Environment issues
+
+- Cloudera pip configuration set `install.user=true`, which conflicts with virtual environments.
+- Dependencies were installed successfully using the `--no-user` option.
+- `/usr/bin/time` was unavailable, so memory was measured with Python's built-in `resource` module.
+- Cloudera and Jupyter runtime files were added to `.gitignore`.
+
+### Phase 3 decision
+
+**Passed.** The model runs without a GPU, contract tests pass, predictions and retained region counts match the local results, overlays remain consistent, and CPU performance is sufficient for the demo.
 
 ## Current decision
 **Technical result: passed.**
@@ -149,4 +199,4 @@ The model loads correctly, runs on CPU and satisfies its input/output contract.
 The expected category activated on all 29 reviewed images. One cross-class false activation occurred. Localization is suitable for an approximate visual indication, but not for claiming precise defect boundaries.
 
 **Final Step 1 decision: usable.**
-The model can proceed to Cloudera CPU validation. It should not yet be used for automatic production rejection decisions.
+The model passed both local and Cloudera CPU validation and can proceed to the next design phase. It should not yet be used for automatic production rejection decisions.
