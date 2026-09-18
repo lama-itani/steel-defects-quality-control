@@ -1,0 +1,22 @@
+# Phase 4 -- Cloudera AI Registry registration environment (.venv-registry)
+# Exact pins confirmed working with the Cloudera mlflow-cml-plugin runtime add-on.
+# Do not upgrade mlflow-skinny, protobuf, or typing-extensions: the plugin
+# requires exactly these versions, or pip reports broken requirements.
+
+mlflow==2.19.0
+mlflow-skinny==2.19.0
+onnx==1.16.2
+onnxruntime==1.23.2
+numpy==2.2.6
+protobuf==4.25.3
+typing-extensions==4.10.0
+
+# NOTE: mlflow-cml-plugin (0.0.1) is NOT installed via pip or this file.
+# It is supplied by enabling the corresponding runtime add-on in the
+# Cloudera AI Workbench project settings (Project Settings -> Runtime ->
+# Add-ons). Enable it before creating this environment, then:
+#   python3 -m venv .venv-registry
+#   source .venv-registry/bin/activate
+#   pip install --upgrade pip
+#   pip install -r requirements-registry.txt
+#   pip check   # should report "No broken requirements found."

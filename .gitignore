@@ -27,3 +27,10 @@ outputs/
 .ipynb_checkpoints/
 .lesshst
 .ssh
+
+# Cloudera / MLflow registry environments and runtime state
+.venv-registry/
+.venv-conflicted-phase4/
+.venv-restored/
+.experiments/
+.bash_history
