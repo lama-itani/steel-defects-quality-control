@@ -200,3 +200,36 @@ The expected category activated on all 29 reviewed images. One cross-class false
 
 **Final Step 1 decision: usable.**
 The model passed both local and Cloudera CPU validation and can proceed to the next design phase. It should not yet be used for automatic production rejection decisions.
+## Deployed endpoint validation — 2026-09-23
+
+- Deployment: `steel-defect-onnx-api-v4`; Model ID: 10.
+- Serving entry point: `src/serve_onnx.py`, function `predict`.
+- Test image: `data/crazing_241.jpg`.
+- Client input: `(1, 3, 128, 128)`, float32.
+- HTTP status: 200.
+- Response success: true.
+- Output shape: `(1, 6, 128, 128)`.
+- All output values finite: true.
+- Existing postprocessing defaults: probability > 0.5;
+  retain connected regions with more than 200 pixels before resizing.
+- Detected class: Crazing.
+- Retained regions: `[1, 0, 0, 0, 0, 0]`.
+- Class activation and region counts match the validated baseline.
+- Saved response: `outputs/crazing_241_v4_response.json`.
+- Saved overlay: `outputs/crazing_241_v4_overlay.jpg`.
+- Endpoint overlay visual review and numerical comparison with local
+  raw outputs were not performed in this check.
+
+### Resolved request mismatch
+
+The client sent `request.inputs`, while the serving function read
+`args["input"]`. The installed decorator passes the parsed dictionary
+without renaming these keys and returns None for missing keys.
+Changing the client to `request.input` resolved the scalar-shape error.
+No deployment rebuild was needed for this client change.
+
+### Decision
+
+Passed endpoint inference and baseline class/region-count validation
+for one image. This does not extend the earlier quality assessment
+or establish endpoint accuracy across all six classes.
