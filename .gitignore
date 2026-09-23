@@ -34,3 +34,5 @@ outputs/
 .venv-restored/
 .experiments/
 .bash_history
+
+!model/Unet.onnx
