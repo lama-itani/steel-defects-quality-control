@@ -1,8 +1,8 @@
 # Step 1 — ONNX Model Validation
 
 ## Current status
-**2026-Sept-16**
-The ONNX model works technically on the local CPU. Phase 2 prediction-quality validation is complete for all six defect categories.
+**2026-09-24**
+Local and Cloudera CPU validation are complete. Deployed endpoint inspection now works on three known images through src/inspection.py. LLM integration is next; see the dated validation sections below.
 
 ## Environment
 - Date: 2026-09-16
@@ -233,3 +233,45 @@ No deployment rebuild was needed for this client change.
 Passed endpoint inference and baseline class/region-count validation
 for one image. This does not extend the earlier quality assessment
 or establish endpoint accuracy across all six classes.
+
+
+## Inspection function validation — 2026-09-24
+
+Added `src/inspection.py` with `inspect_image(image_path)`.
+It calls the deployed endpoint and reuses the existing preprocessing,
+postprocessing and visualization functions. It returns a JSON-compatible
+dictionary and saves an inspection JSON file and overlay under `outputs/`.
+
+### Verified in Cloudera Workbench
+
+| Image | Detected class | Retained regions | Approximate mask area |
+|---|---|---:|---:|
+| crazing_241.jpg | Crazing | 1 | 60.66% |
+| patches_274.jpg | Patches | 1 | 13.14% |
+| patches_274.jpg | Pitted surface | 1 | 1.51% |
+| scratches_86.jpg | Scratches | 3 | 17.83% |
+
+- Deployment: `steel-defect-onnx-api-v4`, Model ID 10.
+- Class activations and region counts match the recorded baseline.
+- The known extra Pitted surface activation on patches_274.jpg persists.
+- Output shape and finite-value checks passed for all three calls.
+- Settings: probability > 0.5; connected regions > 200 pixels at
+  128 x 128 resolution, before resizing.
+- Crazing endpoint round trip: 1642.94 ms; inspection before JSON save:
+  1826.50 ms. These are single observations, not an inference benchmark.
+- Patches and Scratches overlays were visually reviewed in chat.
+  Scratches outlines follow three visible scratches; labels overlap slightly.
+  Patches shows the main patch and the known extra activation.
+- The new Crazing inspection overlay was not visually reviewed here.
+
+### Limits and next step
+
+Mask area is approximate image coverage, not a precise damaged-area
+measurement. Region counts are mask components, not confirmed defect counts.
+The underlying registry version is unverified; model_version remains null.
+No numerical comparison of endpoint logits with local logits was performed.
+
+A screenshot showed Qwen2.5-7B-Instruct running. Its API access, request
+format and tool-calling support remain unverified. Next: obtain a redacted
+API usage example, test access, then connect the inspection function.
+Agent, guidance lookup and UI implementation have not started.
