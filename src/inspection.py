@@ -4,6 +4,9 @@ import os
 from pathlib import Path
 from time import perf_counter
 
+from datetime import datetime, timezone
+from uuid import uuid4
+
 import cmlapi
 import cv2
 import numpy as np
@@ -88,9 +91,11 @@ def inspect_image(image_path: str) -> dict:
         original, masks, mapping
     )
 
-    output_dir = ROOT / "outputs"
-    output_dir.mkdir(parents=True, exist_ok=True)
-    overlay_path = output_dir / f"{path.stem}_inspection_overlay.jpg"
+    inspection_id = uuid4().hex
+    output_dir = ROOT / "outputs" / "inspections" / inspection_id
+    output_dir.mkdir(parents=True, exist_ok=False)
+    overlay_path = output_dir / "overlay.jpg"
+
     if not cv2.imwrite(str(overlay_path), overlay):
         raise RuntimeError("Could not save the overlay")
 
@@ -107,6 +112,10 @@ def inspect_image(image_path: str) -> dict:
         })
 
     result = {
+        "inspection_id": inspection_id,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "status": "completed",
+        "report_status": "draft_for_human_review",
         "image_id": path.name,
         "deployment_name": MODEL_NAME,
         "model_version": None,
@@ -133,6 +142,10 @@ def inspect_image(image_path: str) -> dict:
         ],
     }
 
-    result_path = output_dir / f"{path.stem}_inspection.json"
-    result_path.write_text(json.dumps(result, indent=2), encoding="utf-8")
+    result_path = output_dir / "result.json"
+    temporary_path = output_dir / "result.json.tmp"
+    temporary_path.write_text(
+        json.dumps(result, indent=2), encoding="utf-8"
+    )
+    temporary_path.replace(result_path)
     return result
