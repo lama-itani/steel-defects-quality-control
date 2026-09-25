@@ -68,3 +68,14 @@ has not been verified.
 Repository visibility and model/sample reuse rights remain unresolved.
 This checkpoint must not add model files, sample images, generated
 outputs, credentials, or the exploratory notebook.
+## Stage 2 validated — 2026-09-25
+
+- Full agent succeeded inside the Workbench Application.
+- Patches test: three successful tool calls; Patches (1 region, 13.14%)
+  and Pitted surface (1 region, 1.51%). Both guidance lookups unavailable.
+- Draft label and tool evidence displayed explicitly.
+- Tool availability now follows inspection context; guidance class enum
+  is restricted to returned findings.
+- Oversized batches remain rejected, with diagnostic tool names/count.
+- All five mocked control tests pass after the changes.
+- Next: user interface, report persistence/download, Jobs and packaging.

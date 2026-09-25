@@ -180,3 +180,41 @@ if st.button("Run LLM probe"):
 
 if "llm_probe" in st.session_state:
     st.json(st.session_state["llm_probe"])
+
+st.subheader("Full QC agent test")
+st.caption("Runs a new Patches inspection only when clicked.")
+
+if st.button("Run Patches agent test"):
+    st.session_state.pop("agent_probe", None)
+    st.session_state.pop("agent_probe_error", None)
+
+    try:
+        from src.qc_agent import run_agent
+
+        with st.spinner("Running the QC agent…"):
+            st.session_state["agent_probe"] = run_agent(
+                "Inspect patches_274.jpg. Look up guidance for every "
+                "returned defect class, then summarize all findings and "
+                "limitations. State when guidance is unavailable. "
+                "Include the inspection ID and label the report as "
+                "a draft for human review."
+            )
+    except Exception as exc:
+        st.session_state["agent_probe_error"] = type(exc).__name__
+
+if "agent_probe_error" in st.session_state:
+    st.error(
+        "Agent test failed: "
+        + st.session_state["agent_probe_error"]
+        + ". Request details hidden."
+    )
+
+if "agent_probe" in st.session_state:
+    agent_result = st.session_state["agent_probe"]
+
+    st.warning("DRAFT — FOR HUMAN REVIEW")
+    st.write("Agent status:", agent_result["status"])
+    st.markdown(agent_result["answer"])
+
+    # Keep tool evidence visible even if the LLM subsequently fails.
+    st.json(agent_result)
