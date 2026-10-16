@@ -13,6 +13,7 @@ This repository currently covers technical model validation. It is not yet a pro
 - Model contract tests pass.
 - CPU inference time observed: 21.98–23.42 ms across 2 runs
 - Prediction quality testing across all defect categories is pending.
+- A Streamlit review app lets an engineer review results for the 29 test images; see `docs/review-ui.md`.
 
 ## Setup
 Python 3.10 is recommended.
