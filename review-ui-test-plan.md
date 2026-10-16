@@ -125,6 +125,27 @@ On `patches_274.jpg`:
 - Readiness sample labels for all 29 images still work.
 - `python -m unittest discover tests` still passes.
 
+## 17. Handling guidance
+Guidance comes from `config/defect_guidance.json` (status `draft_pending_review`). Set `QC_SHOW_DRAFT_GUIDANCE=1` in the Application's environment variables and restart it to switch the flag on.
+
+Flag off (variable unset):
+- Open `patches_274.jpg`. The right column shows "Handling guidance" with the document version, approval state `draft_pending_review` and the warning "Draft guidance – not approved for use".
+- Patches and Pitted surface each have an expander reading "No reviewed guidance for this class."
+- Click "Explain this inspection". The answer states that guidance is unavailable for both classes and gives no handling advice.
+
+Flag on:
+- Open `patches_274.jpg`. The "not approved" warning is still shown.
+- Pitted surface shows a "Draft – pending review" badge, the warning "Unreviewed draft guidance – not approved for use", definition, typical causes, the six common steps, class-specific handling, and sources as links with section and access note.
+- Patches still reads "No reviewed guidance for this class."
+- Click "Explain this inspection". The answer calls the Pitted surface guidance unreviewed draft guidance, cites its sources, does not call it approved, and states that Patches has none.
+- Open a Crazing image. The causes list reads "None recorded" (the file has no causes for Crazing).
+
+Fallback:
+- Rename `config/defect_guidance.json`, restart the Application. The panel shows "Guidance file unavailable" and no class shows guidance, even with the flag on. Restore the file afterwards.
+- No raw error text appears in any case.
+
+Three detected classes: the agent has a budget of 4 tool calls (1 inspection plus 3 lookups). Expect it to have no calls left for anything else. This is a known limit, not a failure.
+
 ## Record
 | Item | Result |
 |---|---|
@@ -141,6 +162,7 @@ On `patches_274.jpg`:
 | Navigation | |
 | Review form and history | |
 | QC agent | |
+| Handling guidance, flag off and on | |
 | Error handling | |
 | Readiness app | |
 | Issues found | |
