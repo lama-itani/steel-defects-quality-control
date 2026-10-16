@@ -3,24 +3,15 @@
 Streamlit Application for reviewing the model's results on the 29 held-out test images. Results are drafts for human review; the app makes no accept or reject decisions.
 
 ## What it does
-- **Overview:** summary metrics, class/mismatch/status filters, grid of overlays.
-- **Detail:** original vs overlay with per-class toggles, expected vs detected, findings, limitations, raw JSON.
+- **Overview:** summary metrics, class/mismatch/status filters, grid of overlays. Detected classes are colored chips using the same colors as the masks (`CLASS_COLORS` in `src/visualization.py`).
+- **Detail:** original vs overlay with per-class toggles, dark blue navigation buttons (Back to grid, Previous, Next, Next unreviewed, styled by CSS in `NAV_CSS`), expected vs detected, findings, limitations, raw JSON.
 - **Review:** verdict (agree, disagree, unsure) with a note and history. A note is required for disagree (max 2000 characters).
-- **Handling guidance:** one expander per detected class, read directly from `config/defect_guidance.json` through `qc_tools.lookup_defect_guidance` (no LLM call). See below.
-- **QC agent:** a chat box plus an "Explain this inspection" button. Each question is answered independently (the agent has no memory of earlier turns). Turns are listed newest first, kept in the session only, and not saved.
+- **QC agent:** two clickable example questions plus a question box. Each question is answered independently (the agent has no memory of earlier turns). Turns are listed newest first, kept in the session only, and not saved. Handling guidance is available only through the agent, which reads `config/defect_guidance.json` via `qc_tools.lookup_defect_guidance`.
 
 Flags: `extra_class`, `expected_missing`, `no_detection`. For example, `patches_274.jpg` also detects Pitted surface.
 
-## Handling guidance panel
-Shown in the detail view, right column, between Findings and Review.
-
-- A header line gives the document version and approval state. Unless the document is `approved`, it also shows "Draft guidance – not approved for use".
-- Each detected class has an expander with a status badge. When content may be shown it lists the definition, typical causes, common handling steps, class-specific handling, and sources as links with section and access note.
-- A class without shown guidance reads "No reviewed guidance for this class."
-- If the guidance file is missing or invalid, the panel says "Guidance file unavailable" and no class shows guidance.
-- Errors show only the exception type name.
-
-Only entries with status `approved` are shown by default. The file is currently `draft_pending_review`, so by default every class reads "No reviewed guidance". To show the drafts for a demo, set the environment variable `QC_SHOW_DRAFT_GUIDANCE=1` on the Application and restart it. Drafts are then shown with a "Draft – pending review" badge and an "Unreviewed draft guidance – not approved for use" warning. Patches has no guidance in either mode. The flag applies to the QC agent as well, which then labels drafts as unreviewed and cites their sources.
+## Handling guidance
+There is no guidance section in the page. Only entries with status `approved` are shown by default. The file is currently `draft_pending_review`, so by default the QC agent says guidance is unavailable for every class. To let the agent use the drafts for a demo, set the environment variable `QC_SHOW_DRAFT_GUIDANCE=1` on the Application and restart it. The agent then labels drafts as unreviewed and cites their sources. Patches has no guidance in either mode.
 
 ## Run
 1. Put all 29 images in `data/` (not in Git).
