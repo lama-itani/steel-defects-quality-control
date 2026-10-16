@@ -18,7 +18,7 @@ histories = st.session_state.setdefault("qc_histories", {})
 
 
 def display_history(entries):
-    for entry in entries:
+    for entry in reversed(entries):
         with st.chat_message("user"):
             st.write(entry["question"])
         with st.chat_message("assistant"):
@@ -114,7 +114,7 @@ if result:
         st.write("• No detections does not mean defect-free.")
 
     st.subheader("Ask the QC agent")
-    st.caption("Questions and answers are kept for this session. Each question is answered independently.")
+    st.caption("Questions and answers are kept for this session, newest first. Each question is answered independently.")
     history = histories.setdefault(result["inspection_id"], {
         "sample_label": SAMPLE_LABELS[sample], "entries": [],
     })
@@ -139,9 +139,9 @@ if result:
                             "explain relevant findings for an explanation request; "
                             "write a report only when explicitly requested. "
                             "Never omit findings when summarizing the inspection. "
-                            "Check guidance only when relevant and report its status for each class checked. "
-                            "Label draft_pending_review guidance as unreviewed draft guidance and cite its sources. "
-                            "State which classes have no guidance available. "
+                            "Check guidance only when relevant. Judge each class only by the status in its own result: "
+                            "if guidance unavailable, say only that none is available for that class and do not mention drafts; "
+                            "if draft_pending_review, call it unreviewed draft guidance and cite its sources. "
                             "Include the inspection ID. All answers remain drafts for human review.\n"
                             f"Refer to this image as {SAMPLE_LABELS[sample]}, not its filename.\n"
                             f"User question: {question}"

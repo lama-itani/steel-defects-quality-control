@@ -144,16 +144,33 @@ def overview(rows, flt, deployment):
                 card(row)
 
 
-def run_explain(iid):
-    if not ID_RE.fullmatch(iid):
+GUIDANCE_RULES = (
+    "Judge guidance for each class only by the status in that class's own "
+    "lookup result. If the status is guidance unavailable, say only that no "
+    "guidance is available for that class and do not mention drafts. If the "
+    "status is draft_pending_review, call it unreviewed draft guidance and "
+    "cite its sources."
+)
+EXPLAIN_QUESTION = "Explain this inspection"
+
+
+def run_chat(iid, question):
+    if not ID_RE.fullmatch(iid) or not question.strip():
         return
+    if question == EXPLAIN_QUESTION:
+        task = (
+            "Look up guidance for every returned defect class, then "
+            "summarize all findings and limitations."
+        )
+    else:
+        task = (
+            "Answer the user's question using the saved evidence. Look up "
+            "guidance only if the question needs it."
+        )
     prompt = (
-        f"Retrieve inspection {iid}. Look up guidance for every returned "
-        "defect class, then summarize all findings and limitations. Report "
-        "the guidance status for each class. Label draft_pending_review "
-        "guidance as unreviewed draft guidance and cite its sources. State "
-        "which classes have no guidance available. Include the inspection "
-        "ID and label the report as a draft for human review."
+        f"Retrieve inspection {iid}. Do not run a new inspection. {task} "
+        f"{GUIDANCE_RULES} Include the inspection ID and label the answer "
+        f"as a draft for human review.\nUser question: {question.strip()}"
     )
     try:
         with st.spinner("Reviewing inspection evidence…"):
@@ -164,7 +181,10 @@ def run_explain(iid):
             "answer": f"Agent unavailable ({type(error).__name__}).",
             "tool_results": [],
         }
-    st.session_state.setdefault("agent", {})[iid] = out
+    st.session_state.setdefault("agent", {}).setdefault(iid, []).append({
+        "question": question.strip(),
+        "response": out,
+    })
 
 
 GUIDANCE_BADGE = {
@@ -297,15 +317,30 @@ def detail(image, rows, filtered, flt):
                 b.image(overlay, channels=channels, width="stretch")
 
         st.subheader("QC agent")
+        st.caption(
+            "Chat about this inspection. Each question is answered "
+            "independently; newest first. Kept in this session only."
+        )
+        with st.form(f"chat_{iid}", clear_on_submit=True):
+            question = st.text_input("Question")
+            ask = st.form_submit_button("Ask")
+        if ask:
+            if question.strip():
+                run_chat(iid, question)
+            else:
+                st.info("Enter a question first.")
         if st.button("Explain this inspection"):
-            run_explain(iid)
-        out = st.session_state.get("agent", {}).get(iid)
-        if out:
-            st.warning("DRAFT — FOR HUMAN REVIEW")
-            st.caption(f"Status: {out['status']}")
-            st.markdown(out["answer"])
-            with st.expander("Agent tool results"):
-                st.json(out.get("tool_results", []))
+            run_chat(iid, EXPLAIN_QUESTION)
+        for turn in reversed(st.session_state.get("agent", {}).get(iid, [])):
+            out = turn["response"]
+            with st.chat_message("user"):
+                st.write(turn["question"])
+            with st.chat_message("assistant"):
+                st.warning("DRAFT — FOR HUMAN REVIEW")
+                st.caption(f"Status: {out['status']}")
+                st.markdown(out["answer"])
+                with st.expander("Agent tool results"):
+                    st.json(out.get("tool_results", []))
 
     with right:
         expected = row["expected_class"]

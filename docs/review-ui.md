@@ -7,7 +7,7 @@ Streamlit Application for reviewing the model's results on the 29 held-out test 
 - **Detail:** original vs overlay with per-class toggles, expected vs detected, findings, limitations, raw JSON.
 - **Review:** verdict (agree, disagree, unsure) with a note and history. A note is required for disagree (max 2000 characters).
 - **Handling guidance:** one expander per detected class, read directly from `config/defect_guidance.json` through `qc_tools.lookup_defect_guidance` (no LLM call). See below.
-- **QC agent:** "Explain this inspection" shows a draft in the session only. It is not saved.
+- **QC agent:** a chat box plus an "Explain this inspection" button. Each question is answered independently (the agent has no memory of earlier turns). Turns are listed newest first, kept in the session only, and not saved.
 
 Flags: `extra_class`, `expected_missing`, `no_detection`. For example, `patches_274.jpg` also detects Pitted surface.
 
