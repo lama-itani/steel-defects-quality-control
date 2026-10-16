@@ -111,7 +111,9 @@ On `patches_274.jpg`:
 ## 14. QC agent
 - Click "Explain this inspection" on one image. Expected: DRAFT warning, status, answer citing the inspection ID, and the tool results in an expander.
 - The answer covers every finding, including Pitted surface for `patches_274.jpg`, and states that guidance is unavailable.
-- Open another image and come back: the answer is still shown (session only).
+- Type two questions in the chat box. Expected: both appear as user/assistant pairs with the newest on top and the oldest at the bottom; the box clears after each question.
+- For every answer, compare what it says about guidance with the `status` of each class in "Agent tool results". A class with `guidance unavailable` must not be described as draft guidance.
+- Open another image and come back: the conversation is still shown (session only).
 - Reload the page: the answer is gone, and nothing was written to `outputs/`.
 - Agent unavailable (for example `/tmp/jwt` missing): shows an error status with an exception type name, and the rest of the page still works.
 
