@@ -79,3 +79,9 @@ outputs, credentials, or the exploratory notebook.
 - Oversized batches remain rejected, with diagnostic tool names/count.
 - All five mocked control tests pass after the changes.
 - Next: user interface, report persistence/download, Jobs and packaging.
+
+## Review UI — sample allowlist expanded
+
+- The agent's `inspect_image` allowlist is now the 29 images in
+  `src/catalog.py` (previously `scratches_86.jpg` and `patches_274.jpg`).
+- Review app, batch Job and storage: see `docs/review-ui.md`.

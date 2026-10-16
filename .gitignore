@@ -36,6 +36,3 @@ outputs/
 .bash_history
 
 !model/Unet.onnx
-
-# Markdown files
-*.md
