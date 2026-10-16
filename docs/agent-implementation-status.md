@@ -51,8 +51,9 @@ needs testing.
 
 ## Limitations and deferred work
 
-Guidance has not been supplied; tools return "guidance unavailable"
-with no invented source or version.
+No guidance has been approved. A draft guidance file now exists; see
+"Defect guidance file" below. By default tools still return "guidance
+unavailable" with no invented source or version.
 
 Reports are drafts for human review. Masks and areas are approximate;
 training masks came from bounding boxes. Region counts are mask
@@ -85,3 +86,37 @@ outputs, credentials, or the exploratory notebook.
 - The agent's `inspect_image` allowlist is now the 29 images in
   `src/catalog.py` (previously `scratches_86.jpg` and `patches_274.jpg`).
 - Review app, batch Job and storage: see `docs/review-ui.md`.
+
+## Defect guidance file — 2026-10-16
+
+- `config/defect_guidance.json` holds handling guidance per class, drawn
+  from public sources (EN 10163 via SCI GN 3.05, VDEh atlas, Jansto 2012).
+  Document status is `draft_pending_review`; nothing is approved. Five
+  classes are drafts; Patches is `guidance unavailable`.
+- `lookup_defect_guidance` loads and validates the file once. Class keys must
+  match `class_mapping.json` and every source ID must exist. A missing or
+  invalid file makes every class return "guidance unavailable".
+- Only `approved` entries are returned by default. Drafts are returned as
+  "guidance unavailable" unless `QC_SHOW_DRAFT_GUIDANCE=1` is set, in which
+  case they carry `status: "draft_pending_review"`.
+- Return keys are unchanged: `defect_class`, `status`, `guidance`, `source`,
+  `version`.
+- The `SYSTEM` prompt and the two app prompts now tell the agent to label
+  draft guidance as unreviewed, cite its sources, and state which classes
+  have none. Model, endpoint, tool budget, `active_classes` and dispatch
+  validation are unchanged.
+- The review UI shows the guidance directly, without the agent; see
+  `docs/review-ui.md`.
+- Gaps left as they are in the file: no typical causes for Crazing, no
+  content for Patches, placeholder document ID, no owner or approver, and
+  process actions for Rolled-in scale and Scratches still to be added by a
+  reviewer. Class mappings for Inclusion and Pitted surface have low
+  confidence.
+- The tool description still reads "Check for reviewed local defect
+  guidance"; it was left unchanged.
+
+### Known limit
+
+An image with 3 detected classes uses all 4 tool calls (1 inspection plus
+3 lookups), leaving none spare. Not fixed. Follow-up: a single lookup that
+takes all detected classes. The budget of 4 is unchanged.

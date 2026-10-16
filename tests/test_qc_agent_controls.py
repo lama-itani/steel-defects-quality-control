@@ -158,6 +158,46 @@ class AgentControls(unittest.TestCase):
         self.assertFalse(rejected["ok"])
         self.assertEqual(rejected["allowed_guidance_classes"], ["Scratches"])
 
+    def test_draft_guidance_passes_to_trace_unchanged(self):
+        draft = {
+            "defect_class": "Scratches",
+            "status": "draft_pending_review",
+            "guidance": {"definition": "d"},
+            "source": [{"citation": "c"}],
+            "version": "0.1.0-draft",
+        }
+        calls = []
+
+        def dispatcher(name, raw_arguments):
+            calls.append(name)
+            return INSPECTION if name == "get_inspection" else draft
+
+        result = self.run_mocked(
+            [
+                tool_response(
+                    "get_inspection", {"inspection_id": "a" * 32}
+                ),
+                tool_response(
+                    "lookup_defect_guidance", {"defect_class": "Patches"}
+                ),
+                tool_response(
+                    "lookup_defect_guidance", {"defect_class": "Scratches"}
+                ),
+                final_response(),
+            ],
+            dispatcher,
+        )
+
+        self.assertEqual(calls, ["get_inspection", "lookup_defect_guidance"])
+        self.assertEqual(result["tool_calls_used"], 3)
+        self.assertFalse(result["tool_results"][1]["ok"])
+        self.assertEqual(
+            result["tool_results"][1]["allowed_guidance_classes"],
+            ["Scratches"],
+        )
+        self.assertTrue(result["tool_results"][2]["ok"])
+        self.assertEqual(result["tool_results"][2]["result"], draft)
+
     def test_llm_failure_preserves_evidence_and_hides_details(self):
         dispatcher = MagicMock(return_value=INSPECTION)
         result = self.run_mocked(

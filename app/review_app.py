@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src import catalog, review_logic as rl, review_store as rs
+from src import catalog, qc_tools, review_logic as rl, review_store as rs
 from src.qc_agent import run_agent
 from src.visualization import create_defect_overlay
 
@@ -149,9 +149,11 @@ def run_explain(iid):
         return
     prompt = (
         f"Retrieve inspection {iid}. Look up guidance for every returned "
-        "defect class, then summarize all findings and limitations. State "
-        "when guidance is unavailable. Include the inspection ID and label "
-        "the report as a draft for human review."
+        "defect class, then summarize all findings and limitations. Report "
+        "the guidance status for each class. Label draft_pending_review "
+        "guidance as unreviewed draft guidance and cite its sources. State "
+        "which classes have no guidance available. Include the inspection "
+        "ID and label the report as a draft for human review."
     )
     try:
         with st.spinner("Reviewing inspection evidence…"):
@@ -163,6 +165,69 @@ def run_explain(iid):
             "tool_results": [],
         }
     st.session_state.setdefault("agent", {})[iid] = out
+
+
+GUIDANCE_BADGE = {
+    "approved": ":green[Approved]",
+    "draft_pending_review": ":orange[Draft – pending review]",
+    "guidance unavailable": ":gray[Guidance unavailable]",
+}
+
+
+def guidance_panel(detected):
+    st.subheader("Handling guidance")
+    document = (qc_tools.GUIDANCE or {}).get("document")
+    if document is None:
+        st.warning("Guidance file unavailable. No guidance can be shown.")
+    else:
+        doc_status = document.get("status")
+        st.caption(
+            f"Document version {document.get('version')} · "
+            f"approval state: {doc_status}"
+        )
+        if doc_status != "approved":
+            st.warning("Draft guidance – not approved for use")
+    if not detected:
+        st.caption("No detected classes.")
+        return
+
+    for name in detected:
+        try:
+            item = qc_tools.lookup_defect_guidance(name)
+        except Exception as error:
+            item = None
+            failure = type(error).__name__
+        status = item["status"] if item else "guidance unavailable"
+        with st.expander(f"{name} · {status}"):
+            st.markdown(GUIDANCE_BADGE.get(status, status))
+            if item is None:
+                st.caption(f"Guidance lookup failed ({failure}).")
+                continue
+            body = item["guidance"]
+            if body is None:
+                st.write("No reviewed guidance for this class.")
+                continue
+            if status != "approved":
+                st.warning("Unreviewed draft guidance – not approved for use")
+            st.markdown("**Definition**")
+            st.write(body["definition"] or "None recorded")
+            st.markdown("**Typical causes**")
+            for cause in body["typical_causes"] or ["None recorded"]:
+                st.write(f"• {cause}")
+            st.markdown("**Common handling steps**")
+            for step in body["common_handling"]:
+                st.write(step)
+            st.markdown("**Class-specific handling**")
+            for step in body["class_specific_handling"] or ["None recorded"]:
+                st.write(f"• {step}")
+            st.markdown("**Sources**")
+            for src in item["source"]:
+                section = f", section {src['section']}" if src["section"] else ""
+                st.markdown(
+                    f"• [{src['citation']}]({src['url']}){section}  \n"
+                    f"  _Access: {src['access']}_"
+                )
+            st.caption(f"Document version {item['version']}")
 
 
 def detail(image, rows, filtered, flt):
@@ -272,6 +337,8 @@ def detail(image, rows, filtered, flt):
             f"min region > {cfg.get('min_region_pixels_exclusive')} px "
             f"at {cfg.get('region_filter_resolution')}"
         )
+
+        guidance_panel(detected)
 
         st.subheader("Review")
         with st.form(f"review_{iid}"):

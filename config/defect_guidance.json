@@ -1,0 +1,156 @@
+{
+  "document": {
+    "title": "Handling guidance for model-detected surface defects on hot-rolled flat steel",
+    "document_id": "PLACEHOLDER-assign-in-company-document-system",
+    "version": "0.1.0-draft",
+    "status": "draft_pending_review",
+    "drafted_at": "2026-10-16",
+    "drafted_by": "AI-assisted draft from public sources; not reviewed",
+    "owner": null,
+    "approved_by": null,
+    "approved_at": null,
+    "next_review_due": null,
+    "scope": "Hot-rolled steel plates and wide flats, delivered under EN 10163-2. Not valid for sections, cold-rolled, coated or stainless products without separate review.",
+    "ordered_surface_class": "SET PER ORDER: EN 10163-2 class A or B, subclass 1, 2 or 3",
+    "rules": [
+      "Only entries with status 'approved' may be shown to users as guidance.",
+      "A model detection is not a confirmed defect. Every entry starts with visual confirmation on the material.",
+      "Accept, repair or reject decisions need depth and affected-area measurements the model does not provide. They are made by an authorised inspector against the ordered EN 10163 class.",
+      "Do not copy text from paid standards into this file. Reference document and section only."
+    ]
+  },
+
+  "sources": {
+    "EN10163-1": {
+      "citation": "EN 10163-1:2004 + AC:2007, Delivery requirements for surface condition of hot-rolled steel plates, wide flats and sections - Part 1: General requirements",
+      "sections_used": ["6.1 Depth and affected area of discontinuities", "6.2 Repair requirements", "6.3.1 Grinding", "6.3.2 Welding"],
+      "access": "Paid standard. Not purchased. Section titles taken from the public table of contents only; numeric limits not checked.",
+      "url": "https://knowledge.bsigroup.com/products/delivery-requirements-for-surface-condition-of-hot-rolled-steel-plates-wide-flats-and-sections-general-requirements"
+    },
+    "EN10163-2": {
+      "citation": "EN 10163-2:2004, Delivery requirements for surface condition of hot-rolled steel plates, wide flats and sections - Part 2: Plate and wide flats",
+      "sections_used": ["6.1 Depth and affected area of discontinuities", "6.2.1 Class A", "6.2.2 Class B", "6.3.2 Grinding", "6.3.3 Welding", "Annex A"],
+      "access": "Paid standard. Not purchased. Section titles taken from the public table of contents only; numeric limits not checked.",
+      "url": "https://infostore.saiglobal.com/en-us/standards/bs-en-10163-2-2004-226177_saig_bsi_bsi_530836/"
+    },
+    "SCI-GN-3.05": {
+      "citation": "SteelConstruction.info Guidance Note No. 3.05, Surface defects on steel materials (summary of BS EN 10163)",
+      "sections_used": ["Imperfections and defects", "Repair of defects"],
+      "access": "Free PDF. Read in full.",
+      "url": "https://steelconstruction.info/images/d/db/GN-3-05.pdf"
+    },
+    "VDEH-ATLAS-HR": {
+      "citation": "VDEh (ed.), Surface Defects in Hot Rolled Flat Steel Products, 2nd edition, Verlag Stahleisen, Duesseldorf",
+      "sections_used": ["1.2 Pitting (p. 12)", "2.1 Shell (p. 14)", "2.2 Seams (p. 16)", "3.3 Crazing (p. 26)", "5.1 Rolled-in primary scale (p. 34)", "5.2 Rolled-in secondary scale (p. 36)", "6 Other rolled-in extraneous matter (p. 42)", "7.1 Scratches, grooves and gouges (p. 44)", "9.1 Longitudinal pitting (p. 60)"],
+      "access": "Only the defect list with short definitions was read. Full entries (photos, causes) not read. Copyright of the online scan unclear; buy from Stahleisen before relying on it.",
+      "url": "https://ce.visuallibrary.net/download/pdf/890138.pdf"
+    },
+    "JANSTO-2012": {
+      "citation": "Jansto, S.G.; Stalheim, D.G. Hot Rolling Surface Quality Issues. 49th ABM Rolling Seminar, Rio de Janeiro, 2012, pp. 405-416. DOI 10.5151/2594-5297-22581",
+      "sections_used": ["Abstract", "2 Hot rolling induced surface quality defects", "2.1 Rolled in scale"],
+      "access": "Free. Only abstract and an excerpt were read; corrective actions in the body have NOT been extracted. Reviewer should read it.",
+      "url": "https://abmproceedings.com.br/en/article/hot-rolling-surface-quality-issues-4"
+    }
+  },
+
+  "common_handling": {
+    "steps": [
+      "1. Confirm on the material that the detected area is a real surface discontinuity, not illumination, residual scale texture or a model error.",
+      "2. Measure the depth and the affected area of the discontinuity.",
+      "3. Compare with the limits for the ordered EN 10163-2 class. Within limits it is an imperfection and may remain; beyond limits, or extensive, it is a defect and must be repaired.",
+      "4. Repair defects by chipping and/or grinding. Weld repair only if the ordered subclass allows it: subclass 1 permitted, subclass 2 only if agreed at order, subclass 3 not allowed.",
+      "5. Check the remaining thickness after repair. Class B: never below the minimum thickness of the tolerance standard EN 10029.",
+      "6. Record the measurement, decision and inspector in the inspection record. Material that cannot be repaired within the rules is rejected by the authorised inspector, not by this system."
+    ],
+    "sources": ["EN10163-1 6.1-6.3", "EN10163-2 6.1-6.3", "SCI-GN-3.05"]
+  },
+
+  "classes": {
+    "Crazing": {
+      "status": "draft_pending_review",
+      "mapped_term": "Crazing (VDEh 3.3), a crack-like defect",
+      "mapping_confidence": "medium: same name, but NEU-DET gives no definition; metallurgist to confirm",
+      "definition": "Network of fine cracks, sometimes hair cracks, caused by weakened grain boundaries.",
+      "typical_causes": [],
+      "typical_causes_note": "Not extracted from a read source. Reviewer to add from VDEh atlas section 3.3 full entry.",
+      "class_specific_handling": [
+        "If confirmed as cracks: under EN 10163-2 class A, cracks are always defects regardless of depth and must be repaired (common steps 4-6)."
+      ],
+      "sources": ["VDEH-ATLAS-HR 3.3", "SCI-GN-3.05", "EN10163-2 6.2.1"]
+    },
+
+    "Inclusion": {
+      "status": "draft_pending_review",
+      "mapped_term": "Shell (VDEh 2.1) or seams (VDEh 2.2): laps or stripes containing non-metallic inclusions",
+      "mapping_confidence": "low: NEU-DET 'inclusion' has no published definition; two possible mappings",
+      "definition": "Surface discontinuity containing non-metallic material: irregular laps (shell) or stripes along the rolling direction (seams).",
+      "typical_causes": [
+        "Non-metallic inclusions originating before rolling (steelmaking or casting stage) [VDEH-ATLAS-HR 2.1, 2.2 short definitions]"
+      ],
+      "class_specific_handling": [
+        "If confirmed as shell or seam: under EN 10163-2 class A these are always defects and must be repaired (common steps 4-6).",
+        "Report to the steel supplier when confirmed; origin is upstream of the inspection point."
+      ],
+      "sources": ["VDEH-ATLAS-HR 2.1, 2.2", "SCI-GN-3.05", "EN10163-2 6.2.1"]
+    },
+
+    "Patches": {
+      "status": "guidance unavailable",
+      "mapped_term": null,
+      "mapping_confidence": "none: no matching term found in EN 10163 summary or VDEh atlas list. Candidates seen: 'patch-like' shell (VDEh 2.1), 'sand patches' (SCI-GN-3.05). Neither confirmed.",
+      "definition": null,
+      "typical_causes": [],
+      "class_specific_handling": [],
+      "sources": []
+    },
+
+    "Pitted surface": {
+      "status": "draft_pending_review",
+      "mapped_term": "Pitting (VDEh 1.2), longitudinal pitting (VDEh 9.1) or corrosion pitting",
+      "mapping_confidence": "low: three possible origins with different handling",
+      "definition": "Small depressions or open voids distributed over the surface.",
+      "typical_causes": [
+        "Broken-open gas inclusions near the surface [VDEH-ATLAS-HR 1.2]",
+        "Stock particles welded onto work rolls and printed onto the product [VDEH-ATLAS-HR 9.1]",
+        "Rusting during storage; covered separately in SCI GN 8.01 [SCI-GN-3.05 scope]"
+      ],
+      "class_specific_handling": [
+        "Identify which origin applies before choosing a corrective action; handling of the material itself follows common steps 2-6."
+      ],
+      "sources": ["VDEH-ATLAS-HR 1.2, 9.1", "SCI-GN-3.05", "EN10163-2 6.1"]
+    },
+
+    "Rolled-in scale": {
+      "status": "draft_pending_review",
+      "mapped_term": "Rolled-in primary scale (VDEh 5.1) or rolled-in secondary scale (VDEh 5.2)",
+      "mapping_confidence": "high: same term in VDEh atlas and EN 10163 summary",
+      "definition": "Oxide scale pressed into the surface during hot rolling.",
+      "typical_causes": [
+        "Primary: furnace or roughing-mill scale that was not fully removed before rolling [VDEH-ATLAS-HR 5.1]",
+        "Secondary: scale not fully removed and rolled in within the finishing train [VDEH-ATLAS-HR 5.2]"
+      ],
+      "context": "Reported as the most frequent surface quality issue in structural plate and coil hot rolling [JANSTO-2012 2.1].",
+      "class_specific_handling": [
+        "Material: common steps 2-6.",
+        "Process: report primary vs secondary to the rolling mill; corrective actions to be added by reviewer from JANSTO-2012 body."
+      ],
+      "sources": ["VDEH-ATLAS-HR 5.1, 5.2", "JANSTO-2012", "SCI-GN-3.05", "EN10163-2 6.1"]
+    },
+
+    "Scratches": {
+      "status": "draft_pending_review",
+      "mapped_term": "Scratches, grooves and gouges (VDEh 7.1)",
+      "mapping_confidence": "high: same term in VDEh atlas and EN 10163 summary",
+      "definition": "Mechanical surface damage of varying severity, usually linear.",
+      "typical_causes": [
+        "Mechanical damage [VDEH-ATLAS-HR 7.1]",
+        "Mechanical handling; reported as the third most frequent hot-rolling surface issue [JANSTO-2012 2]"
+      ],
+      "class_specific_handling": [
+        "Material: common steps 2-6.",
+        "Process: check handling and transport equipment along the line; specific actions to be added by reviewer."
+      ],
+      "sources": ["VDEH-ATLAS-HR 7.1", "JANSTO-2012", "SCI-GN-3.05", "EN10163-2 6.1"]
+    }
+  }
+}
