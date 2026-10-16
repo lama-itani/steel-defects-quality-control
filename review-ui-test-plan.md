@@ -66,7 +66,8 @@ Expected:
 Run this after the batch Job, with step 7 test reviews removed.
 - Header shows the deployment name and "Results are drafts for human review".
 - Metrics: Images 29, Expected class detected 29, Images with a flag 1 (`patches_274.jpg`), Reviewed 0.
-- Grid shows 29 cards with overlay, file name, detected classes, region count and status.
+- Grid shows 29 cards with overlay, file name, detected classes as colored chips, region count and status.
+- Each chip color matches that class's mask color in the overlay (for example Pitted surface red, Scratches magenta). Patches and Pitted surface on `patches_274.jpg` show two different chips.
 - Class pills show counts 5/5/4/5/5/5, and All (29).
 - Click Patches: grid shows 5 cards. Deselect it: grid shows all 29 again.
 - "Mismatch only": grid shows only `patches_274.jpg`, flagged "Extra class detected".
@@ -92,6 +93,7 @@ Open `patches_274.jpg`.
 - Next and Previous move in grid order; Previous is disabled on the first image and Next on the last.
 - With the Patches filter on, Next stays within Patches.
 - "Back to grid" keeps the filter.
+- Back to grid, Previous, Next and Next unreviewed are dark blue with white text and stand out from the page; a disabled one is light grey. Other buttons (Open, Ask, example questions, Save) keep the default style.
 - "Next unreviewed" jumps to the next image with no review and wraps around.
 - Edit the URL to `?image=nonexistent.jpg`: the overview shows, with no error.
 - Browser refresh on a detail page keeps the same image.
@@ -109,8 +111,8 @@ On `patches_274.jpg`:
 - "Start review: next unreviewed" with all reviewed shows "Nothing left to review in this filter".
 
 ## 14. QC agent
-- Click "Explain this inspection" on one image. Expected: DRAFT warning, status, answer citing the inspection ID, and the tool results in an expander.
-- The answer covers every finding, including Pitted surface for `patches_274.jpg`, and states that guidance is unavailable.
+- The QC agent section shows two example question buttons and a question box, with no "Explain this inspection" button and no explanatory caption.
+- Click each example question on one image. Expected: the question appears as a user message, then a DRAFT warning, status, answer citing the inspection ID, and the tool results in an expander.
 - Type two questions in the chat box. Expected: both appear as user/assistant pairs with the newest on top and the oldest at the bottom; the box clears after each question.
 - For every answer, compare what it says about guidance with the `status` of each class in "Agent tool results". A class with `guidance unavailable` must not be described as draft guidance.
 - Open another image and come back: the conversation is still shown (session only).
@@ -127,23 +129,18 @@ On `patches_274.jpg`:
 - Readiness sample labels for all 29 images still work.
 - `python -m unittest discover tests` still passes.
 
-## 17. Handling guidance
-Guidance comes from `config/defect_guidance.json` (status `draft_pending_review`). Set `QC_SHOW_DRAFT_GUIDANCE=1` in the Application's environment variables and restart it to switch the flag on.
+## 17. Handling guidance (agent only)
+The page has no guidance section. Guidance comes from `config/defect_guidance.json` (status `draft_pending_review`) and reaches the user only through QC agent answers. Set `QC_SHOW_DRAFT_GUIDANCE=1` in the Application's environment variables and restart it to switch the flag on.
 
 Flag off (variable unset):
-- Open `patches_274.jpg`. The right column shows "Handling guidance" with the document version, approval state `draft_pending_review` and the warning "Draft guidance – not approved for use".
-- Patches and Pitted surface each have an expander reading "No reviewed guidance for this class."
-- Click "Explain this inspection". The answer states that guidance is unavailable for both classes and gives no handling advice.
+- Open `patches_274.jpg` and ask "What handling steps apply to the detected classes?". The answer states that guidance is unavailable for both classes and gives no handling advice. "Agent tool results" shows `guidance unavailable`.
 
 Flag on:
-- Open `patches_274.jpg`. The "not approved" warning is still shown.
-- Pitted surface shows a "Draft – pending review" badge, the warning "Unreviewed draft guidance – not approved for use", definition, typical causes, the six common steps, class-specific handling, and sources as links with section and access note.
-- Patches still reads "No reviewed guidance for this class."
-- Click "Explain this inspection". The answer calls the Pitted surface guidance unreviewed draft guidance, cites its sources, does not call it approved, and states that Patches has none.
-- Open a Crazing image. The causes list reads "None recorded" (the file has no causes for Crazing).
+- Ask the same question. The answer calls the Pitted surface guidance unreviewed draft guidance, cites its sources, does not call it approved, and states that Patches has none.
+- Open a Crazing image and ask for typical causes. The answer says none are recorded (the file has no causes for Crazing).
 
 Fallback:
-- Rename `config/defect_guidance.json`, restart the Application. The panel shows "Guidance file unavailable" and no class shows guidance, even with the flag on. Restore the file afterwards.
+- Rename `config/defect_guidance.json`, restart the Application. The agent reports guidance unavailable, even with the flag on. Restore the file afterwards.
 - No raw error text appears in any case.
 
 Three detected classes: the agent has a budget of 4 tool calls (1 inspection plus 3 lookups). Expect it to have no calls left for anything else. This is a known limit, not a failure.
@@ -164,7 +161,7 @@ Three detected classes: the agent has a budget of 4 tool calls (1 inspection plu
 | Navigation | |
 | Review form and history | |
 | QC agent | |
-| Handling guidance, flag off and on | |
+| Handling guidance via agent, flag off and on | |
 | Error handling | |
 | Readiness app | |
 | Issues found | |

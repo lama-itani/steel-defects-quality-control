@@ -11,9 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src import catalog, qc_tools, review_logic as rl, review_store as rs
+from src import catalog, review_logic as rl, review_store as rs
 from src.qc_agent import run_agent
-from src.visualization import create_defect_overlay
+from src.visualization import CLASS_COLORS, create_defect_overlay
 
 MAPPING = json.loads((ROOT / "config/class_mapping.json").read_text())
 CLASS_IDS = {name: int(i) for i, name in MAPPING.items()}
@@ -44,6 +44,21 @@ def load_data():
         if review:
             reviews[result["inspection_id"]] = review
     return latest, reviews
+
+
+NAV_CSS = """
+<style>
+[class*="st-key-nav_"] button {
+    background-color: #1f4e79; color: #fff; border: 1px solid #1f4e79;
+}
+[class*="st-key-nav_"] button:hover:not(:disabled) {
+    background-color: #2a6aa5; border-color: #2a6aa5; color: #fff;
+}
+[class*="st-key-nav_"] button:disabled {
+    background-color: #c5ced8; border-color: #c5ced8; color: #6b7785;
+}
+</style>
+"""
 
 
 def go(image=None):
@@ -88,6 +103,21 @@ def filter_ui(rows, flt):
     )
 
 
+def class_hex(name):
+    blue, green, red = CLASS_COLORS[CLASS_IDS[name]]
+    return f"#{red:02x}{green:02x}{blue:02x}"
+
+
+def class_chip(name):
+    blue, green, red = CLASS_COLORS[CLASS_IDS[name]]
+    text = "#000" if 0.299 * red + 0.587 * green + 0.114 * blue > 150 else "#fff"
+    return (
+        f"<span style='background:{class_hex(name)};color:{text};"
+        "padding:1px 8px;border-radius:10px;margin-right:4px;"
+        f"font-size:0.8em;white-space:nowrap'>{name}</span>"
+    )
+
+
 def card(row):
     with st.container(border=True):
         iid = row["inspection_id"]
@@ -101,9 +131,15 @@ def card(row):
             st.info("Not inspected – run the batch Job")
         st.markdown(f"**{row['image_id']}**")
         if iid:
-            detected = ", ".join(row["detected_classes"]) or "None"
             regions = sum(f["retained_regions"] for f in row["findings"])
-            st.caption(f"Detected: {detected} · {regions} regions")
+            if row["detected_classes"]:
+                chips = "".join(class_chip(c) for c in row["detected_classes"])
+                st.markdown(
+                    f"{chips}<span style='font-size:0.8em'>· {regions} regions</span>",
+                    unsafe_allow_html=True,
+                )
+            else:
+                st.caption(f"Detected: None · {regions} regions")
             if row["flag"]:
                 st.caption(f":orange[{FLAG_LABEL[row['flag']]}]")
         st.caption(STATUS_LABEL[row["status"]])
@@ -151,22 +187,19 @@ GUIDANCE_RULES = (
     "status is draft_pending_review, call it unreviewed draft guidance and "
     "cite its sources."
 )
-EXPLAIN_QUESTION = "Explain this inspection"
+EXAMPLE_QUESTIONS = [
+    "What was detected in this image, and does it match the expected class?",
+    "What limitations should I keep in mind for this result?",
+]
 
 
 def run_chat(iid, question):
     if not ID_RE.fullmatch(iid) or not question.strip():
         return
-    if question == EXPLAIN_QUESTION:
-        task = (
-            "Look up guidance for every returned defect class, then "
-            "summarize all findings and limitations."
-        )
-    else:
-        task = (
-            "Answer the user's question using the saved evidence. Look up "
-            "guidance only if the question needs it."
-        )
+    task = (
+        "Answer the user's question using the saved evidence. Look up "
+        "guidance only if the question needs it."
+    )
     prompt = (
         f"Retrieve inspection {iid}. Do not run a new inspection. {task} "
         f"{GUIDANCE_RULES} Include the inspection ID and label the answer "
@@ -187,69 +220,6 @@ def run_chat(iid, question):
     })
 
 
-GUIDANCE_BADGE = {
-    "approved": ":green[Approved]",
-    "draft_pending_review": ":orange[Draft – pending review]",
-    "guidance unavailable": ":gray[Guidance unavailable]",
-}
-
-
-def guidance_panel(detected):
-    st.subheader("Handling guidance")
-    document = (qc_tools.GUIDANCE or {}).get("document")
-    if document is None:
-        st.warning("Guidance file unavailable. No guidance can be shown.")
-    else:
-        doc_status = document.get("status")
-        st.caption(
-            f"Document version {document.get('version')} · "
-            f"approval state: {doc_status}"
-        )
-        if doc_status != "approved":
-            st.warning("Draft guidance – not approved for use")
-    if not detected:
-        st.caption("No detected classes.")
-        return
-
-    for name in detected:
-        try:
-            item = qc_tools.lookup_defect_guidance(name)
-        except Exception as error:
-            item = None
-            failure = type(error).__name__
-        status = item["status"] if item else "guidance unavailable"
-        with st.expander(f"{name} · {status}"):
-            st.markdown(GUIDANCE_BADGE.get(status, status))
-            if item is None:
-                st.caption(f"Guidance lookup failed ({failure}).")
-                continue
-            body = item["guidance"]
-            if body is None:
-                st.write("No reviewed guidance for this class.")
-                continue
-            if status != "approved":
-                st.warning("Unreviewed draft guidance – not approved for use")
-            st.markdown("**Definition**")
-            st.write(body["definition"] or "None recorded")
-            st.markdown("**Typical causes**")
-            for cause in body["typical_causes"] or ["None recorded"]:
-                st.write(f"• {cause}")
-            st.markdown("**Common handling steps**")
-            for step in body["common_handling"]:
-                st.write(step)
-            st.markdown("**Class-specific handling**")
-            for step in body["class_specific_handling"] or ["None recorded"]:
-                st.write(f"• {step}")
-            st.markdown("**Sources**")
-            for src in item["source"]:
-                section = f", section {src['section']}" if src["section"] else ""
-                st.markdown(
-                    f"• [{src['citation']}]({src['url']}){section}  \n"
-                    f"  _Access: {src['access']}_"
-                )
-            st.caption(f"Document version {item['version']}")
-
-
 def detail(image, rows, filtered, flt):
     row = next(r for r in rows if r["image_id"] == image)
     iid = row["inspection_id"]
@@ -257,16 +227,17 @@ def detail(image, rows, filtered, flt):
     prev_id, next_id = rl.neighbours(nav, image)
     position = [r["image_id"] for r in nav].index(image) + 1
 
+    st.markdown(NAV_CSS, unsafe_allow_html=True)
     bar = st.columns([1, 3, 1, 1, 1.6])
-    bar[0].button("Back to grid", on_click=go)
+    bar[0].button("Back to grid", key="nav_back", on_click=go)
     bar[1].markdown(
         f"Image {position} of {len(nav)} · Filter: {filter_text(flt)}"
     )
-    bar[2].button("Previous", disabled=not prev_id, on_click=go, args=(prev_id,))
-    bar[3].button("Next", disabled=not next_id, on_click=go, args=(next_id,))
+    bar[2].button("Previous", key="nav_prev", disabled=not prev_id, on_click=go, args=(prev_id,))
+    bar[3].button("Next", key="nav_next", disabled=not next_id, on_click=go, args=(next_id,))
     unreviewed = rl.next_unreviewed(nav, image)
     bar[4].button(
-        "Next unreviewed", disabled=not unreviewed,
+        "Next unreviewed", key="nav_unreviewed", disabled=not unreviewed,
         on_click=go, args=(unreviewed,),
     )
 
@@ -317,10 +288,10 @@ def detail(image, rows, filtered, flt):
                 b.image(overlay, channels=channels, width="stretch")
 
         st.subheader("QC agent")
-        st.caption(
-            "Chat about this inspection. Each question is answered "
-            "independently; newest first. Kept in this session only."
-        )
+        st.caption("Try an example question:")
+        for n, example in enumerate(EXAMPLE_QUESTIONS):
+            if st.button(example, key=f"example_{iid}_{n}"):
+                run_chat(iid, example)
         with st.form(f"chat_{iid}", clear_on_submit=True):
             question = st.text_input("Question")
             ask = st.form_submit_button("Ask")
@@ -329,8 +300,6 @@ def detail(image, rows, filtered, flt):
                 run_chat(iid, question)
             else:
                 st.info("Enter a question first.")
-        if st.button("Explain this inspection"):
-            run_chat(iid, EXPLAIN_QUESTION)
         for turn in reversed(st.session_state.get("agent", {}).get(iid, [])):
             out = turn["response"]
             with st.chat_message("user"):
@@ -372,8 +341,6 @@ def detail(image, rows, filtered, flt):
             f"min region > {cfg.get('min_region_pixels_exclusive')} px "
             f"at {cfg.get('region_filter_resolution')}"
         )
-
-        guidance_panel(detected)
 
         st.subheader("Review")
         with st.form(f"review_{iid}"):
