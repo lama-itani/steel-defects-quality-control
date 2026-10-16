@@ -2,15 +2,13 @@ import json
 import re
 from pathlib import Path
 
+from src.catalog import SAMPLE_FILES
 from src.inspection import inspect_image as run_inspection
 
 ROOT = Path(__file__).resolve().parents[1]
 STORE = ROOT / "outputs" / "inspections"
 
-SAMPLES = {
-    "scratches_86.jpg": "data/scratches_86.jpg",
-    "patches_274.jpg": "data/patches_274.jpg",
-}
+SAMPLES = {name: f"data/{name}" for name in SAMPLE_FILES}
 
 CLASSES = frozenset(
     json.loads(

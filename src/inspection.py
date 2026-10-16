@@ -99,6 +99,10 @@ def inspect_image(image_path: str) -> dict:
     if not cv2.imwrite(str(overlay_path), overlay):
         raise RuntimeError("Could not save the overlay")
 
+    np.savez_compressed(
+        output_dir / "masks.npz", masks=masks.astype(np.uint8)
+    )
+
     findings = []
     for class_id, mask in enumerate(masks):
         if not np.any(mask):
