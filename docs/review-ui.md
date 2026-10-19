@@ -16,7 +16,7 @@ There is no guidance section in the page. Only entries with status `approved` ar
 ## Run
 1. Put all 29 images in `data/` (not in Git).
 2. Create a Job with `scripts/run_batch_inspections.py` and run it. Use `--only-missing` to resume.
-3. Create an Application with `scripts/start_review_app.py`. Keep the readiness Application on `scripts/start_readiness.py`.
+3. Create an Application with `scripts/start_review_app.py`.
 
 The Job and Application must run in the same project so they share `outputs/inspections/`.
 

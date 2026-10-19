@@ -203,7 +203,7 @@ The model passed both local and Cloudera CPU validation and can proceed to the n
 ## Deployed endpoint validation — 2026-09-23
 
 - Deployment: `steel-defect-onnx-api-v4`; Model ID: 10.
-- Serving entry point: `src/serve_onnx.py`, function `predict`.
+- Serving entry point: `extras/model-endpoint/serve_onnx.py`, function `predict`.
 - Test image: `data/crazing_241.jpg`.
 - Client input: `(1, 3, 128, 128)`, float32.
 - HTTP status: 200.

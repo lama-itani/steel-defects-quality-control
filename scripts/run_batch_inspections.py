@@ -72,9 +72,9 @@ def main():
         }
         match = regions == BASELINE[name]
         diff += not match
-        ms = result["timing_ms"]["endpoint_round_trip"]
+        ms = result["timing_ms"]["inference_ms"]
         print(
-            f"{name}: {regions} endpoint {ms} ms "
+            f"{name}: {regions} inference {ms} ms "
             f"{'MATCH' if match else 'DIFF'}"
         )
 
