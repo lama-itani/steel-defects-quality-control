@@ -19,4 +19,4 @@
 ## Usage restrictions
 The original repository does not provide a clear licence file. This notice documents provenance but does not grant reuse or redistribution rights.
 
-The ONNX model and validation images are therefore excluded from this Git repository and used only for local technical evaluation.
+The ONNX model file is included in this repository for the AMP and its licence status is unconfirmed (# TODO). The sample images are not stored in Git; they are downloaded at install time. Confirm licence terms before any redistribution.
