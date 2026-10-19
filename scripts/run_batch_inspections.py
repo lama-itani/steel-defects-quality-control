@@ -2,7 +2,10 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+try:
+    ROOT = Path(__file__).resolve().parents[1]
+except NameError:  # AMP tasks run scripts like notebook cells
+    ROOT = Path.cwd()
 sys.path.insert(0, str(ROOT))
 
 from src import catalog, review_store  # noqa: E402

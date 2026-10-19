@@ -3,7 +3,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-root = Path(__file__).resolve().parents[1]
+try:
+    root = Path(__file__).resolve().parents[1]
+except NameError:  # AMP tasks run scripts like notebook cells
+    root = Path.cwd()
 if not (root / "app" / "review_app.py").is_file():
     raise RuntimeError(f"Review app not found under project directory: {root}")
 

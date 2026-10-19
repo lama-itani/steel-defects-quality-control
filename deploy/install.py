@@ -5,7 +5,10 @@ import subprocess
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+try:
+    ROOT = Path(__file__).resolve().parents[1]
+except NameError:  # AMP tasks run scripts like notebook cells
+    ROOT = Path.cwd()
 MODEL = ROOT / "model" / "Unet.onnx"
 MODEL_SHA256 = (
     "90defe5e1199ac4265916a362b47f6d0ecc24430c97fd047851445842da53a04"
