@@ -1,22 +1,23 @@
-# Validation data
+# Sample data
+
 ## Source
-The test images come from the `Validation_Images` folder in:
+The 29 sample images come from the `Validation_Images` folder in:
 https://github.com/siddhartamukherjee/NEU-DET-Steel-Surface-Defect-Detection
 
-The underlying dataset is NEU-DET.
+The underlying dataset is NEU-DET (Northeastern University surface defect database).
 
-## Current local images
-- `crazing_241.jpg`
-  - Expected category: Crazing
-  - Used for initial pipeline validation
+`scripts/download_samples.py` downloads them into `data/` at install time (AMP task 2). The script skips files already present. If the machine has no internet access, upload the 29 images below into `data/` and rerun it.
 
-More images will be added for quality testing across all six categories.
+## Required images
+- Crazing: `crazing_151.jpg`, `crazing_153.jpg`, `crazing_166.jpg`, `crazing_240.jpg`, `crazing_241.jpg`
+- Patches: `patches_28.jpg`, `patches_63.jpg`, `patches_128.jpg`, `patches_151.jpg`, `patches_274.jpg`
+- Inclusion: `inclusion_161.jpg`, `inclusion_169.jpg`, `inclusion_195.jpg`, `inclusion_263.jpg`
+- Pitted surface: `pitted_surface_18.jpg`, `pitted_surface_64.jpg`, `pitted_surface_110.jpg`, `pitted_surface_125.jpg`, `pitted_surface_175.jpg`
+- Rolled-in scale: `rolled-in_scale_14.jpg`, `rolled-in_scale_80.jpg`, `rolled-in_scale_138.jpg`, `rolled-in_scale_176.jpg`, `rolled-in_scale_216.jpg`
+- Scratches: `scratches_86.jpg`, `scratches_195.jpg`, `scratches_264.jpg`, `scratches_286.jpg`, `scratches_300.jpg`
 
-## Storage and usage
-- Images are stored locally under `data/`.
-- Image files are excluded from Git.
-- Dataset reuse and redistribution rights have not yet been confirmed.
-- Do not commit or redistribute the images until the licence status is clear.
+The file name prefix is the expected defect class.
 
-## Current validation scope
-Only one image has been tested with the new ONNX pipeline. No aggregate Dice or IoU result has been calculated.
+## Storage and licence
+- Images are excluded from Git (`data/*.jpg`).
+- Licence: # TODO — the source repository declares no licence and no usage terms. Dataset reuse and redistribution rights are not confirmed; do not commit or redistribute the images.
