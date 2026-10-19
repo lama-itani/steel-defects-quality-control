@@ -13,9 +13,9 @@ environment_variables:
     default: ""
     description: >-
       Cloudera AI Inference OpenAI-compatible base URL, ending in /openai/v1
-    required: true
+    required: false
   QC_LLM_MODEL:
-    default: "Qwen/Qwen2.5-7B-Instruct"
+    default: ""
     description: "Model name served by the Cloudera AI Inference endpoint"
     required: false
   QC_SHOW_DRAFT_GUIDANCE:
