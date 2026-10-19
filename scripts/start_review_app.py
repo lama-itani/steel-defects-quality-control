@@ -3,7 +3,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-root = Path.cwd().resolve()
+root = Path(__file__).resolve().parents[1]
 if not (root / "app" / "review_app.py").is_file():
     raise RuntimeError(f"Review app not found under project directory: {root}")
 

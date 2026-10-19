@@ -1,10 +1,12 @@
 import json
 import os
+from pathlib import Path
 
 from openai import OpenAI
 from src import qc_tools
 
 MAX_TOOL_CALLS = 4
+JWT_PATH = Path("/tmp/jwt")
 
 REGISTRY = {
     "inspect_image": (qc_tools.inspect_image, "image_id"),
@@ -114,17 +116,21 @@ def run_agent(prompt: str) -> dict:
             "report_status": "draft_for_human_review",
         }
 
+    base_url = os.getenv("QC_LLM_BASE_URL", "").strip()
+    if not base_url or not JWT_PATH.is_file():
+        return outcome(
+            "not_configured",
+            "LLM not configured. Set QC_LLM_BASE_URL to the Cloudera AI "
+            "Inference OpenAI-compatible base URL and make sure the session "
+            "token file is available. Inspections and review still work.",
+        )
+
     try:
-        with open("/tmp/jwt") as jwt_file:
+        with JWT_PATH.open() as jwt_file:
             token = json.load(jwt_file)["access_token"]
 
         with OpenAI(
-            base_url=os.getenv(
-                "QC_LLM_BASE_URL",
-                "https://applied-ai.applied.jmgjgh.a0.cloudera.site"
-                "/namespaces/serving-default/endpoints"
-                "/qwen2-5-7b-instruct/openai/v1",
-            ),
+            base_url=base_url,
             api_key=token,
             timeout=30.0,
             max_retries=0,
