@@ -11,7 +11,7 @@ from src.preprocessing import preprocess_image
 
 MODEL_NAME = "steel-defect-onnx-api-v4"
 URL = "https://modelservice.ml-a60a2d26-d1f.applied.jmgjgh.a0.cloudera.site/model"
-IMAGE = "data/crazing_241.jpg"
+IMAGE = "data/crazing_1.jpg"
 OUTPUT = Path("outputs/crazing_241_v4_response.json")
 
 

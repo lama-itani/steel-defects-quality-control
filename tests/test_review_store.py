@@ -53,7 +53,7 @@ class StoreTests(unittest.TestCase):
             review_store.load_masks(ID)
 
     def test_append_and_history(self):
-        write_result(self.root, ID, "crazing_151.jpg", "2026-01-01")
+        write_result(self.root, ID, "crazing_1.jpg", "2026-01-01")
         review_store.append_review(ID, "unsure", " first ")
         review_store.append_review(ID, "agree", "")
         hist = review_store.review_history(ID)
@@ -62,7 +62,7 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(review_store.latest_review(ID)["verdict"], "agree")
 
     def test_append_rejects(self):
-        write_result(self.root, ID, "crazing_151.jpg", "2026-01-01")
+        write_result(self.root, ID, "crazing_1.jpg", "2026-01-01")
         with self.assertRaises(ValueError):
             review_store.append_review(ID, "maybe", "")
         with self.assertRaises(ValueError):
@@ -75,20 +75,20 @@ class StoreTests(unittest.TestCase):
             review_store.append_review(ID2, "agree", "")
 
     def test_bad_line_skipped(self):
-        write_result(self.root, ID, "crazing_151.jpg", "2026-01-01")
+        write_result(self.root, ID, "crazing_1.jpg", "2026-01-01")
         review_store.append_review(ID, "agree", "")
         with open(self.root / ID / "reviews.jsonl", "a") as f:
             f.write("{not json\n")
         self.assertEqual(len(review_store.review_history(ID)), 1)
 
     def test_latest_inspections(self):
-        write_result(self.root, ID, "crazing_151.jpg", "2026-01-01")
-        write_result(self.root, ID2, "crazing_151.jpg", "2026-02-01")
+        write_result(self.root, ID, "crazing_1.jpg", "2026-01-01")
+        write_result(self.root, ID2, "crazing_1.jpg", "2026-02-01")
         write_result(self.root, "c" * 32, "other.jpg", "2026-03-01")
         (self.root / "junk").mkdir()
         latest = review_store.latest_inspections()
-        self.assertEqual(list(latest), ["crazing_151.jpg"])
-        self.assertEqual(latest["crazing_151.jpg"]["inspection_id"], ID2)
+        self.assertEqual(list(latest), ["crazing_1.jpg"])
+        self.assertEqual(latest["crazing_1.jpg"]["inspection_id"], ID2)
 
 
 if __name__ == "__main__":

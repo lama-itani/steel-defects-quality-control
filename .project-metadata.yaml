@@ -42,18 +42,6 @@ tasks:
     gpu: 0
 
   - type: run_session
-    name: Download sample images
-    script: scripts/download_samples.py
-    kernel: python3
-    short_summary: Download the 29 sample images into data/
-    long_summary: >-
-      Downloads the 29 sample images from the Validation_Images folder of the
-      NEU-DET repository. Files already present are skipped.
-    cpu: 2
-    memory: 4
-    gpu: 0
-
-  - type: run_session
     name: Run baseline inspections
     script: scripts/run_batch_inspections.py
     kernel: python3
