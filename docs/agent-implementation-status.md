@@ -11,7 +11,7 @@ tool-calling agent, and Jobs for setup and validation. No Agent Studio.
 
 ## Verified
 
-- The Application starts with project-root resolution via Path.cwd().
+- The Application starts with project-root resolution from the script location.
 - Streamlit binds to 127.0.0.1 using CDSW_READONLY_PORT.
 - Application runtime: Python 3.10.20, streamlit 1.64.0,
   openai 3.19.2, cmlapi 26.8.4, numpy 2.2.6, requests 2.32.5.

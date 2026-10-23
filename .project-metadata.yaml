@@ -1,0 +1,81 @@
+name: Steel Surface QC
+description: >-
+  Steel surface defect inspection with an in-app U-Net ONNX model, a human
+  review interface, and a tool-using QC agent backed by Cloudera AI
+  Inference. Outputs are draft results for human review.
+author: Lama Itani  
+specification_version: 1.0
+prototype_version: 1.0
+date: "2026-10-19"
+
+environment_variables:
+  QC_LLM_BASE_URL:
+    default: ""
+    description: >-
+      Cloudera AI Inference OpenAI-compatible base URL, ending in /openai/v1
+    required: false
+  QC_LLM_MODEL:
+    default: ""
+    description: "Model name served by the Cloudera AI Inference endpoint"
+    required: false
+  QC_SHOW_DRAFT_GUIDANCE:
+    default: "0"
+    description: "Set to 1 to show unreviewed draft defect guidance"
+    required: false
+
+runtimes:
+  - editor: JupyterLab
+    kernel: Python 3.10
+    edition: Standard
+
+tasks:
+  - type: run_session
+    name: Install dependencies
+    script: deploy/install.py
+    kernel: python3
+    short_summary: Verify the model, install packages, create folders
+    long_summary: >-
+      Prints CPU and disk, verifies the SHA-256 of model/Unet.onnx, installs
+      requirements.txt, and creates the data and outputs folders.
+    cpu: 2
+    memory: 4
+    gpu: 0
+
+  - type: run_session
+    name: Download sample images
+    script: scripts/download_samples.py
+    kernel: python3
+    short_summary: Download the 29 sample images into data/
+    long_summary: >-
+      Downloads the 29 sample images from the Validation_Images folder of the
+      NEU-DET repository. Files already present are skipped.
+    cpu: 2
+    memory: 4
+    gpu: 0
+
+  - type: run_session
+    name: Run baseline inspections
+    script: scripts/run_batch_inspections.py
+    kernel: python3
+    short_summary: Inspect all 29 samples and compare with the baseline
+    long_summary: >-
+      Runs the ONNX model on the 29 sample images, saves the inspections, and
+      compares retained regions per class with the validated baseline.
+    cpu: 2
+    memory: 4
+    gpu: 0
+
+  - type: start_application
+    name: Steel Surface QC
+    subdomain: steel-qc
+    script: app/start_app.py
+    kernel: python3
+    short_summary: Launch the review interface and QC agent
+    long_summary: >-
+      Serves the Streamlit review application, which runs the ONNX model
+      inside the app and calls Cloudera AI Inference for the QC agent.
+    cpu: 2
+    memory: 4
+    gpu: 0
+    environment_variables:
+      TASK_TYPE: START_APPLICATION

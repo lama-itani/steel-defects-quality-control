@@ -1,6 +1,6 @@
 # Inspection review UI
 
-Streamlit Application for reviewing the model's results on the 29 held-out test images. Results are drafts for human review; the app makes no accept or reject decisions.
+Streamlit Application for reviewing the model's results on the 29 sample images. Results are drafts for human review; the app makes no accept or reject decisions.
 
 ## What it does
 - **Overview:** summary metrics, class/mismatch/status filters, grid of overlays. Detected classes are colored chips using the same colors as the masks (`CLASS_COLORS` in `src/visualization.py`).
@@ -14,11 +14,9 @@ Flags: `extra_class`, `expected_missing`, `no_detection`. For example, `patches_
 There is no guidance section in the page. Only entries with status `approved` are shown by default. The file is currently `draft_pending_review`, so by default the QC agent says guidance is unavailable for every class. To let the agent use the drafts for a demo, set the environment variable `QC_SHOW_DRAFT_GUIDANCE=1` on the Application and restart it. The agent then labels drafts as unreviewed and cites their sources. Patches has no guidance in either mode.
 
 ## Run
-1. Put all 29 images in `data/` (not in Git).
-2. Create a Job with `scripts/run_batch_inspections.py` and run it. Use `--only-missing` to resume.
-3. Create an Application with `scripts/start_review_app.py`. Keep the readiness Application on `scripts/start_readiness.py`.
+Create a Cloudera AI project from this repository as an AMP and enter `QC_LLM_BASE_URL`. The AMP downloads the 29 images, runs the baseline inspections, and starts the application (`app/start_app.py`). See `deploy/README.md` for the tasks, environment variables and how to rerun.
 
-The Job and Application must run in the same project so they share `outputs/inspections/`.
+The tasks run in the same project, so they share `outputs/inspections/`.
 
 ## Storage
 Under `outputs/inspections/<inspection_id>/` (not in Git):

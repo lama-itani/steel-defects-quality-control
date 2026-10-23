@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 300" font-family="Helvetica, Arial, sans-serif" font-size="14">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#334155"/>
+    </marker>
+  </defs>
+  <rect x="10" y="10" width="880" height="280" rx="10" fill="#f8fafc" stroke="#cbd5e1"/>
+  <text x="25" y="35" font-weight="bold" fill="#0f172a">Cloudera AI project (CPU, 2 vCPU / 4 GB)</text>
+
+  <rect x="30" y="100" width="130" height="70" rx="8" fill="#e2e8f0" stroke="#64748b"/>
+  <text x="95" y="130" text-anchor="middle">Sample image</text>
+  <text x="95" y="150" text-anchor="middle" font-size="12">data/</text>
+
+  <rect x="210" y="100" width="150" height="70" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+  <text x="285" y="130" text-anchor="middle">ONNX model</text>
+  <text x="285" y="150" text-anchor="middle" font-size="12">in app, ONNX Runtime CPU</text>
+
+  <rect x="410" y="100" width="150" height="70" rx="8" fill="#e2e8f0" stroke="#64748b"/>
+  <text x="485" y="130" text-anchor="middle">Results</text>
+  <text x="485" y="150" text-anchor="middle" font-size="12">outputs/inspections/</text>
+
+  <rect x="610" y="55" width="260" height="70" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="740" y="85" text-anchor="middle">Review UI (Streamlit)</text>
+  <text x="740" y="105" text-anchor="middle" font-size="12">grid, overlays, verdicts</text>
+
+  <rect x="610" y="150" width="260" height="70" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+  <text x="740" y="180" text-anchor="middle">QC agent</text>
+  <text x="740" y="200" text-anchor="middle" font-size="12">max 4 tool calls, draft answers</text>
+
+  <rect x="610" y="235" width="260" height="45" rx="8" fill="#fef3c7" stroke="#d97706"/>
+  <text x="740" y="263" text-anchor="middle">Cloudera AI Inference LLM</text>
+
+  <line x1="160" y1="135" x2="208" y2="135" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="360" y1="135" x2="408" y2="135" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="560" y1="125" x2="608" y2="95" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="560" y1="145" x2="608" y2="175" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+  <line x1="740" y1="220" x2="740" y2="233" stroke="#334155" stroke-width="2" marker-end="url(#a)"/>
+</svg>

@@ -1,7 +1,10 @@
 import json
+import os
+import tempfile
 import unittest
+from pathlib import Path
 from types import SimpleNamespace
-from unittest.mock import MagicMock, mock_open, patch
+from unittest.mock import MagicMock, patch
 
 from src import qc_agent as agent
 
@@ -66,19 +69,42 @@ class AgentControls(unittest.TestCase):
         client = MagicMock()
         client.chat.completions.create.side_effect = responses
 
-        with (
-            patch.object(agent, "OpenAI") as factory,
-            patch(
-                "builtins.open",
-                mock_open(read_data='{"access_token": "test-only"}'),
-            ),
-            patch.object(agent, "dispatch_tool", dispatcher),
-        ):
-            factory.return_value.__enter__.return_value = client
-            result = agent.run_agent("Retrieve the saved inspection.")
+        with tempfile.TemporaryDirectory() as directory:
+            jwt_path = Path(directory) / "jwt"
+            jwt_path.write_text('{"access_token": "test-only"}')
+            with (
+                patch.object(agent, "OpenAI") as factory,
+                patch.object(agent, "JWT_PATH", jwt_path),
+                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1"}),
+                patch.object(agent, "dispatch_tool", dispatcher),
+            ):
+                factory.return_value.__enter__.return_value = client
+                result = agent.run_agent("Retrieve the saved inspection.")
 
         self.assertEqual(result["report_status"], "draft_for_human_review")
         return result
+
+    def test_missing_configuration_returns_not_configured(self):
+        with tempfile.TemporaryDirectory() as directory:
+            jwt_path = Path(directory) / "jwt"
+            jwt_path.write_text('{"access_token": "test-only"}')
+            with (
+                patch.object(agent, "OpenAI") as factory,
+                patch.object(agent, "JWT_PATH", jwt_path),
+                patch.dict(os.environ, {"QC_LLM_BASE_URL": ""}),
+            ):
+                result = agent.run_agent("Retrieve the saved inspection.")
+                factory.assert_not_called()
+            self.assertEqual(result["status"], "not_configured")
+
+            with (
+                patch.object(agent, "OpenAI") as factory,
+                patch.object(agent, "JWT_PATH", Path(directory) / "missing"),
+                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1"}),
+            ):
+                result = agent.run_agent("Retrieve the saved inspection.")
+                factory.assert_not_called()
+            self.assertEqual(result["status"], "not_configured")
 
     def test_dispatch_rejects_invalid_requests(self):
         function = MagicMock()

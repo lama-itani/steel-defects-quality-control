@@ -36,7 +36,8 @@ def parse_arguments() -> argparse.Namespace:
         type=Path,
         default=PROJECT_ROOT / "outputs",
     )
-    return parser.parse_args()
+    args, _ = parser.parse_known_args()
+    return args
 
 
 def main() -> None:

@@ -2,7 +2,10 @@ import argparse
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
+try:
+    ROOT = Path(__file__).resolve().parents[1]
+except NameError:  # AMP tasks run scripts like notebook cells
+    ROOT = Path.cwd()
 sys.path.insert(0, str(ROOT))
 
 from src import catalog, review_store  # noqa: E402
@@ -45,7 +48,7 @@ BASELINE = {
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--only-missing", action="store_true")
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
 
     existing = review_store.latest_inspections() if args.only_missing else {}
     done = missing = failed = diff = 0
@@ -72,9 +75,9 @@ def main():
         }
         match = regions == BASELINE[name]
         diff += not match
-        ms = result["timing_ms"]["endpoint_round_trip"]
+        ms = result["timing_ms"]["inference_ms"]
         print(
-            f"{name}: {regions} endpoint {ms} ms "
+            f"{name}: {regions} inference {ms} ms "
             f"{'MATCH' if match else 'DIFF'}"
         )
 
@@ -82,7 +85,8 @@ def main():
         f"done {done}, missing image {missing}, failed {failed}, "
         f"diff {diff}"
     )
-    sys.exit(1 if failed or diff else 0)
+    if failed or diff:
+        raise SystemExit(1)
 
 
 if __name__ == "__main__":
