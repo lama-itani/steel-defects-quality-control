@@ -8,7 +8,7 @@ Streamlit Application for reviewing the model's results on the 29 sample images.
 - **Review:** verdict (agree, disagree, unsure) with a note and history. A note is required for disagree (max 2000 characters).
 - **QC agent:** two clickable example questions plus a question box. Each question is answered independently (the agent has no memory of earlier turns). Turns are listed newest first, kept in the session only, and not saved. Handling guidance is available only through the agent, which reads `config/defect_guidance.json` via `qc_tools.lookup_defect_guidance`.
 
-Flags: `extra_class`, `expected_missing`, `no_detection`. For example, `patches_274.jpg` also detects Pitted surface.
+Flags: `extra_class`, `expected_missing`, `no_detection`. For example, `rolled-in_scale_4.jpg` also detects Pitted surface.
 
 ## Handling guidance
 There is no guidance section in the page. Only entries with status `approved` are shown by default. The file is currently `draft_pending_review`, so by default the QC agent says guidance is unavailable for every class. To let the agent use the drafts for a demo, set the environment variable `QC_SHOW_DRAFT_GUIDANCE=1` on the Application and restart it. The agent then labels drafts as unreviewed and cites their sources. Patches has no guidance in either mode.

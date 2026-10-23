@@ -1,5 +1,7 @@
 # Step 1 — ONNX Model Validation
 
+> These results were obtained on NEU-DET images that are no longer part of the project.
+
 ## Current status
 **2026-09-24**
 Local and Cloudera CPU validation are complete. Deployed endpoint inspection now works on three known images through src/inspection.py. LLM integration is next; see the dated validation sections below.

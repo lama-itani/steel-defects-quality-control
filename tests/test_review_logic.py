@@ -15,20 +15,20 @@ class FlagTests(unittest.TestCase):
         ]["flag"]
 
     def test_flags(self):
-        self.assertIsNone(self.flag("scratches_86.jpg", ["Scratches"]))
+        self.assertIsNone(self.flag("scratches_1.jpg", ["Scratches"]))
         self.assertEqual(
-            self.flag("patches_274.jpg", ["Patches", "Pitted surface"]),
+            self.flag("rolled-in_scale_4.jpg", ["Rolled-in scale", "Pitted surface"]),
             "extra_class",
         )
         self.assertEqual(
-            self.flag("patches_28.jpg", ["Scratches"]), "expected_missing"
+            self.flag("patches_1.jpg", ["Scratches"]), "expected_missing"
         )
-        self.assertEqual(self.flag("patches_28.jpg", []), "no_detection")
+        self.assertEqual(self.flag("patches_1.jpg", []), "no_detection")
 
     def test_rows_and_status(self):
         iid = "b" * 32
         rows = rl.build_rows(
-            {"crazing_151.jpg": result("crazing_151.jpg", ["Crazing"], iid)},
+            {"crazing_1.jpg": result("crazing_1.jpg", ["Crazing"], iid)},
             {iid: {"verdict": "agree"}},
         )
         self.assertEqual([r["image_id"] for r in rows], SAMPLE_FILES)

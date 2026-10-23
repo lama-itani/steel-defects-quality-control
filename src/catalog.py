@@ -5,20 +5,14 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 SAMPLE_FILES = [
-    "crazing_151.jpg", "crazing_153.jpg", "crazing_166.jpg",
-    "crazing_240.jpg", "crazing_241.jpg",
-    "patches_28.jpg", "patches_63.jpg", "patches_128.jpg",
-    "patches_151.jpg", "patches_274.jpg",
-    "inclusion_161.jpg", "inclusion_169.jpg",
-    "inclusion_195.jpg", "inclusion_263.jpg",
-    "pitted_surface_18.jpg", "pitted_surface_64.jpg",
-    "pitted_surface_110.jpg", "pitted_surface_125.jpg",
-    "pitted_surface_175.jpg",
-    "rolled-in_scale_14.jpg", "rolled-in_scale_80.jpg",
-    "rolled-in_scale_138.jpg", "rolled-in_scale_176.jpg",
-    "rolled-in_scale_216.jpg",
-    "scratches_86.jpg", "scratches_195.jpg", "scratches_264.jpg",
-    "scratches_286.jpg", "scratches_300.jpg",
+    "crazing_1.jpg", "crazing_2.jpg", "crazing_3.jpg", "crazing_4.jpg", "crazing_5.jpg",
+    "patches_1.jpg", "patches_2.jpg", "patches_3.jpg", "patches_4.jpg", "patches_5.jpg",
+    "inclusion_1.jpg", "inclusion_2.jpg", "inclusion_3.jpg", "inclusion_4.jpg",
+    "pitted_surface_1.jpg", "pitted_surface_2.jpg", "pitted_surface_3.jpg",
+    "pitted_surface_4.jpg", "pitted_surface_5.jpg",
+    "rolled-in_scale_1.jpg", "rolled-in_scale_2.jpg", "rolled-in_scale_3.jpg",
+    "rolled-in_scale_4.jpg", "rolled-in_scale_5.jpg",
+    "scratches_1.jpg", "scratches_2.jpg", "scratches_3.jpg", "scratches_4.jpg", "scratches_5.jpg",
 ]
 
 PREFIX_TO_CLASS = {

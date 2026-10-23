@@ -1,23 +1,22 @@
 # Sample data
 
 ## Source
-The 29 sample images come from the `Validation_Images` folder in:
-https://github.com/siddhartamukherjee/NEU-DET-Steel-Surface-Defect-Detection
+The 29 sample images are synthetic. `scripts/generate_synthetic_samples.py` generates them procedurally (seed 2026) with no third-party images as input. They are stored in Git; nothing is downloaded at install time.
 
-The underlying dataset is NEU-DET (Northeastern University surface defect database).
+To reproduce them (development only, needs `scipy`): `python scripts/generate_synthetic_samples.py data`. The AMP does not run the generator; different numpy or OpenCV versions could change the pixels and break the baseline.
 
-`scripts/download_samples.py` downloads them into `data/` at install time (AMP task 2). The script skips files already present. If the machine has no internet access, upload the 29 images below into `data/` and rerun it.
+## Images
+200×200 grayscale JPEG. The file name prefix is the expected defect class.
 
-## Required images
-- Crazing: `crazing_151.jpg`, `crazing_153.jpg`, `crazing_166.jpg`, `crazing_240.jpg`, `crazing_241.jpg`
-- Patches: `patches_28.jpg`, `patches_63.jpg`, `patches_128.jpg`, `patches_151.jpg`, `patches_274.jpg`
-- Inclusion: `inclusion_161.jpg`, `inclusion_169.jpg`, `inclusion_195.jpg`, `inclusion_263.jpg`
-- Pitted surface: `pitted_surface_18.jpg`, `pitted_surface_64.jpg`, `pitted_surface_110.jpg`, `pitted_surface_125.jpg`, `pitted_surface_175.jpg`
-- Rolled-in scale: `rolled-in_scale_14.jpg`, `rolled-in_scale_80.jpg`, `rolled-in_scale_138.jpg`, `rolled-in_scale_176.jpg`, `rolled-in_scale_216.jpg`
-- Scratches: `scratches_86.jpg`, `scratches_195.jpg`, `scratches_264.jpg`, `scratches_286.jpg`, `scratches_300.jpg`
+- Crazing: `crazing_1.jpg`, `crazing_2.jpg`, `crazing_3.jpg`, `crazing_4.jpg`, `crazing_5.jpg`
+- Patches: `patches_1.jpg`, `patches_2.jpg`, `patches_3.jpg`, `patches_4.jpg`, `patches_5.jpg`
+- Inclusion: `inclusion_1.jpg`, `inclusion_2.jpg`, `inclusion_3.jpg`, `inclusion_4.jpg`
+- Pitted surface: `pitted_surface_1.jpg`, `pitted_surface_2.jpg`, `pitted_surface_3.jpg`, `pitted_surface_4.jpg`, `pitted_surface_5.jpg`
+- Rolled-in scale: `rolled-in_scale_1.jpg`, `rolled-in_scale_2.jpg`, `rolled-in_scale_3.jpg`, `rolled-in_scale_4.jpg`, `rolled-in_scale_5.jpg`
+- Scratches: `scratches_1.jpg`, `scratches_2.jpg`, `scratches_3.jpg`, `scratches_4.jpg`, `scratches_5.jpg`
 
-The file name prefix is the expected defect class.
+`labels/<name>.txt` holds YOLO boxes per image (class order as in `config/class_mapping.json`). The app does not use them.
 
-## Storage and licence
-- Images are excluded from Git (`data/*.jpg`).
-- Licence: # TODO — the source repository declares no licence and no usage terms. Dataset reuse and redistribution rights are not confirmed; do not commit or redistribute the images.
+## Notes
+- The generator was tuned against the shipped model, so results on these images do not measure accuracy on real steel.
+- The crazing images look more stylised than real steel.

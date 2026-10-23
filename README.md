@@ -40,7 +40,7 @@ Limitations: masks and areas are approximate (training masks came from bounding 
 
 1. In Cloudera AI, create a new project from this repository as an AMP.
 2. Enter `QC_LLM_BASE_URL`: the Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1`. Optionally set `QC_LLM_MODEL` (default `Qwen/Qwen2.5-7B-Instruct`).
-3. Wait for the four tasks to finish: Install dependencies, Download sample images, Run baseline inspections, Steel Surface QC (the application).
+3. Wait for the three tasks to finish: Install dependencies, Run baseline inspections, Steel Surface QC (the application).
 4. Open the Steel Surface QC application.
 
 Task details, environment variables and how to rerun are in [`deploy/README.md`](deploy/README.md).
@@ -69,8 +69,8 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 | `src/` | Inference, pre/postprocessing, inspection pipeline, review store, QC agent |
 | `config/` | Class mapping and defect guidance |
 | `model/` | `Unet.onnx` and the model card |
-| `data/` | Sample images, downloaded at install time (not in Git) |
-| `scripts/` | Sample download and baseline batch inspections |
+| `data/` | Synthetic sample images, stored in Git |
+| `scripts/` | Baseline batch inspections and the sample image generator |
 | `deploy/` | AMP install task and notes |
 | `tests/` | Unit and model contract tests |
 | `assets/` | Architecture diagram |
@@ -84,7 +84,6 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 
 - A Cloudera AI (Workbench) project that can be created from a Git repository
 - A Cloudera AI Inference endpoint serving an OpenAI-compatible chat model with tool calling (for the QC agent only)
-- Internet access from the project session to download the 29 sample images from GitHub (otherwise upload them to `data/`; see [`data/README.md`](data/README.md))
 
 ## Hardware Requirements
 
@@ -95,10 +94,10 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 
 ## Documentation
 
-- [`deploy/README.md`](deploy/README.md) — the four AMP tasks, environment variables, rerunning
+- [`deploy/README.md`](deploy/README.md) — the three AMP tasks, environment variables, rerunning
 - [`docs/review-ui.md`](docs/review-ui.md) — the review application
 - [`docs/step1-validation.md`](docs/step1-validation.md) — model validation and baseline
 - [`model/README.md`](model/README.md) — model card
-- [`data/README.md`](data/README.md) — sample images and their source
+- [`data/README.md`](data/README.md) — the synthetic sample images and how they are made
 - [`extras/model-endpoint/README.md`](extras/model-endpoint/README.md) — optional endpoint and registry files
 - [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — provenance and licence status
