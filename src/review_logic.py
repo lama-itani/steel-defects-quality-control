@@ -1,6 +1,8 @@
-from src.catalog import SAMPLE_FILES, expected_class
+from src.catalog import PREFIX_TO_CLASS, SAMPLE_FILES, expected_class
 
 REVIEWED = {"agree", "disagree", "unsure"}
+AREA_BANDS = ("<5%", "5–20%", "≥20%")
+VERDICT_KEYS = ("agree", "disagree", "unsure", "not_reviewed")
 
 
 def _flag(expected, detected):
@@ -58,6 +60,68 @@ def summary(rows) -> dict:
         ),
         "flagged": sum(bool(r["flag"]) for r in rows),
         "reviewed": sum(r["status"] in REVIEWED for r in rows),
+    }
+
+
+def _area_band(percent):
+    if percent < 5:
+        return AREA_BANDS[0]
+    if percent < 20:
+        return AREA_BANDS[1]
+    return AREA_BANDS[2]
+
+
+def dashboard_stats(rows) -> dict:
+    """Aggregate figures for the QC dashboard; only inspected rows count."""
+    classes = list(PREFIX_TO_CLASS.values())
+    inspected = [r for r in rows if r["inspection_id"]]
+
+    images = {c: 0 for c in classes}
+    regions = {c: 0 for c in classes}
+    bands = {c: dict.fromkeys(AREA_BANDS, 0) for c in classes}
+    for r in inspected:
+        for c in set(r["detected_classes"]):
+            images[c] = images.get(c, 0) + 1
+        for f in r["findings"]:
+            c = f["class_name"]
+            regions[c] = regions.get(c, 0) + f["retained_regions"]
+            bands.setdefault(c, dict.fromkeys(AREA_BANDS, 0))[
+                _area_band(f["approximate_mask_area_percent"])
+            ] += 1
+
+    pareto = sorted(
+        (
+            {"class_name": c, "images": n, "regions": regions.get(c, 0)}
+            for c, n in images.items() if n
+        ),
+        key=lambda p: (p["images"], p["regions"]),
+        reverse=True,
+    )
+
+    per_class = {}
+    for c in classes:
+        group = [r for r in inspected if r["expected_class"] == c]
+        hit = sum(c in r["detected_classes"] for r in group)
+        entry = {
+            "images": sum(r["expected_class"] == c for r in rows),
+            "inspected": len(group),
+            "expected_detected": hit,
+            "detection_rate": hit / len(group) if group else None,
+        }
+        for key in VERDICT_KEYS:
+            entry[key] = sum(r["status"] == key for r in group)
+        per_class[c] = entry
+
+    attention = [
+        r["image_id"] for r in inspected
+        if r["flag"] or r["status"] == "disagree"
+    ]
+    return {
+        "inspected": len(inspected),
+        "pareto": pareto,
+        "area_bands": {c: bands[c] for c in classes},
+        "per_class": per_class,
+        "attention": attention,
     }
 
 

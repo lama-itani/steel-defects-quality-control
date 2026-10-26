@@ -62,9 +62,10 @@ general anomaly detection. No detections does not mean defect-free.
 Probabilities are not calibrated confidence. No automatic material
 acceptance, rejection, or external actions are authorized.
 
-The full UI, setup/validation Jobs, dependency packaging, project
-metadata, and report download remain unfinished. Final runtime edition
-has not been verified.
+The full UI, setup/validation Jobs, dependency packaging, and project
+metadata remain unfinished. A human-readable inspection record download
+exists in the review app; the agent tool `create_inspection_report` is
+still not implemented. Final runtime edition has not been verified.
 
 Repository visibility and model/sample reuse rights remain unresolved.
 This checkpoint must not add model files, sample images, generated

@@ -70,5 +70,92 @@ class NavTests(unittest.TestCase):
         self.assertIsNone(rl.next_unreviewed(done, "i0"))
 
 
+def finding(name, regions, area):
+    return {
+        "class_name": name,
+        "retained_regions": regions,
+        "approximate_mask_area_percent": area,
+    }
+
+
+def drow(image, expected, findings, status="not_reviewed", flag=None, iid="x"):
+    return {
+        "image_id": image,
+        "expected_class": expected,
+        "inspection_id": iid,
+        "detected_classes": [f["class_name"] for f in findings],
+        "findings": findings,
+        "status": status,
+        "flag": flag,
+    }
+
+
+class DashboardTests(unittest.TestCase):
+    def test_pareto_order_and_counts(self):
+        rows = [
+            drow("a", "Crazing", [finding("Crazing", 2, 1.0)]),
+            drow("b", "Crazing", [
+                finding("Crazing", 1, 1.0), finding("Patches", 5, 1.0),
+            ]),
+            drow("c", "Patches", [finding("Patches", 1, 1.0)]),
+            drow("d", "Patches", [finding("Patches", 1, 1.0)]),
+        ]
+        pareto = rl.dashboard_stats(rows)["pareto"]
+        self.assertEqual(
+            pareto,
+            [
+                {"class_name": "Patches", "images": 3, "regions": 7},
+                {"class_name": "Crazing", "images": 2, "regions": 3},
+            ],
+        )
+
+    def test_area_band_boundaries(self):
+        rows = [drow("a", "Crazing", [
+            finding("Crazing", 1, 4.99),
+            finding("Patches", 1, 5.0),
+            finding("Scratches", 1, 20.0),
+        ])]
+        bands = rl.dashboard_stats(rows)["area_bands"]
+        self.assertEqual(bands["Crazing"], {"<5%": 1, "5–20%": 0, "≥20%": 0})
+        self.assertEqual(bands["Patches"], {"<5%": 0, "5–20%": 1, "≥20%": 0})
+        self.assertEqual(bands["Scratches"], {"<5%": 0, "5–20%": 0, "≥20%": 1})
+
+    def test_per_class_rate_and_verdicts(self):
+        rows = [
+            drow("a", "Crazing", [finding("Crazing", 1, 1.0)], status="agree"),
+            drow("b", "Crazing", [], status="disagree", flag="no_detection"),
+            drow("c", "Crazing", [], status="unsure", flag="no_detection"),
+            drow("d", "Crazing", [finding("Crazing", 1, 1.0)]),
+            drow("e", "Patches", [], iid=None, status="not_inspected"),
+        ]
+        stats = rl.dashboard_stats(rows)["per_class"]
+        crazing = stats["Crazing"]
+        self.assertEqual(crazing["inspected"], 4)
+        self.assertEqual(crazing["expected_detected"], 2)
+        self.assertEqual(crazing["detection_rate"], 0.5)
+        self.assertEqual(
+            sum(crazing[k] for k in
+                ("agree", "disagree", "unsure", "not_reviewed")),
+            crazing["inspected"],
+        )
+        self.assertIsNone(stats["Patches"]["detection_rate"])
+        self.assertEqual(stats["Patches"]["inspected"], 0)
+
+    def test_attention(self):
+        rows = [
+            drow("a", "Crazing", [finding("Crazing", 1, 1.0)], status="agree"),
+            drow("b", "Patches", [], flag="no_detection"),
+            drow("c", "Inclusion", [finding("Inclusion", 1, 1.0)],
+                 status="disagree"),
+        ]
+        self.assertEqual(rl.dashboard_stats(rows)["attention"], ["b", "c"])
+
+    def test_empty(self):
+        stats = rl.dashboard_stats(rl.build_rows({}, {}))
+        self.assertEqual(stats["pareto"], [])
+        self.assertEqual(stats["attention"], [])
+        self.assertEqual(stats["inspected"], 0)
+
+
 if __name__ == "__main__":
     unittest.main()

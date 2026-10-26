@@ -11,8 +11,9 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src import catalog, review_logic as rl, review_store as rs
+from src import catalog, review_logic as rl, review_store as rs, what_if
 from src.qc_agent import run_agent
+from src.report import build_record_html
 from src.visualization import CLASS_COLORS, create_defect_overlay
 
 MAPPING = json.loads((ROOT / "config/class_mapping.json").read_text())
@@ -66,6 +67,11 @@ def go(image=None):
         st.query_params["image"] = image
     else:
         st.query_params.clear()
+
+
+def go_view(view):
+    st.query_params.clear()
+    st.query_params["view"] = view
 
 
 def overlay_file(iid):
@@ -149,8 +155,113 @@ def card(row):
         )
 
 
+def dashboard(rows):
+    st.markdown(NAV_CSS, unsafe_allow_html=True)
+    st.button("Back to grid", key="nav_back_dash", on_click=go)
+    st.title("Steel QC · Dashboard")
+    st.caption(
+        "Figures cover the sample images only and do not describe production "
+        "quality. Areas are approximate. Results are drafts for human review."
+    )
+
+    s = rl.summary(rows)
+    cols = st.columns(4)
+    cols[0].metric("Images", s["total"])
+    cols[1].metric("Expected class detected", s["expected_detected"])
+    cols[2].metric("Images with a flag", s["flagged"])
+    cols[3].metric("Reviewed", s["reviewed"])
+
+    stats = rl.dashboard_stats(rows)
+    if not stats["inspected"]:
+        st.info("No inspections yet – run the batch Job")
+        return
+
+    st.subheader("Defect Pareto")
+    if stats["pareto"]:
+        pareto = [
+            {"Class": p["class_name"], "Images": p["images"],
+             "Regions": p["regions"]}
+            for p in stats["pareto"]
+        ]
+        chart, table = st.columns([3, 2])
+        chart.bar_chart(pareto, x="Class", y="Images", sort=False)
+        table.dataframe(pareto, hide_index=True, width="stretch")
+    else:
+        st.info("No detections in the inspected images.")
+
+    st.subheader("Affected-area bands")
+    bands = [
+        {"Class": c, **b} for c, b in stats["area_bands"].items()
+    ]
+    st.bar_chart(
+        bands, x="Class", y=list(rl.AREA_BANDS), stack=True, sort=False
+    )
+    st.caption("Number of findings per approximate affected-area band.")
+
+    st.subheader("Model vs expected class")
+    st.dataframe(
+        [
+            {
+                "Class": c,
+                "Inspected": p["inspected"],
+                "Expected detected": p["expected_detected"],
+                "Detection rate (%)": (
+                    None if p["detection_rate"] is None
+                    else round(100 * p["detection_rate"], 1)
+                ),
+            }
+            for c, p in stats["per_class"].items()
+        ],
+        hide_index=True, width="stretch",
+    )
+    st.caption("Expected class comes from the file name.")
+
+    st.subheader("Reviewer verdicts")
+    verdicts = [
+        {
+            "Class": c,
+            "Agree": p["agree"],
+            "Disagree": p["disagree"],
+            "Unsure": p["unsure"],
+            "Not reviewed": p["not_reviewed"],
+        }
+        for c, p in stats["per_class"].items()
+    ]
+    st.bar_chart(
+        verdicts, x="Class",
+        y=["Agree", "Disagree", "Unsure", "Not reviewed"],
+        stack=True, sort=False,
+    )
+    reviewed = sum(v["Agree"] + v["Disagree"] + v["Unsure"] for v in verdicts)
+    if reviewed:
+        agreed = sum(v["Agree"] for v in verdicts)
+        st.caption(
+            f"Reviewers agreed on {agreed} of {reviewed} reviewed images "
+            f"({round(100 * agreed / reviewed)}%)."
+        )
+    else:
+        st.caption("No reviews yet")
+
+    st.subheader("Needs attention")
+    if not stats["attention"]:
+        st.write("Nothing flagged or disagreed.")
+    by_id = {r["image_id"]: r for r in rows}
+    for image_id in stats["attention"]:
+        r = by_id[image_id]
+        cols = st.columns([3, 3, 2, 1])
+        cols[0].write(image_id)
+        cols[1].write(FLAG_LABEL.get(r["flag"], "–"))
+        cols[2].write(STATUS_LABEL[r["status"]])
+        cols[3].button(
+            "Open", key=f"attn_{image_id}", on_click=go, args=(image_id,)
+        )
+
+
 def overview(rows, flt, deployment):
-    st.title("Steel QC · Inspection review")
+    st.markdown(NAV_CSS, unsafe_allow_html=True)
+    title, nav = st.columns([5, 1])
+    title.title("Steel QC · Inspection review")
+    nav.button("QC dashboard", key="nav_dashboard", on_click=go_view, args=("dashboard",))
     st.caption(f"Deployment: {deployment} · Results are drafts for human review")
     if st.session_state.get("flash"):
         st.success(st.session_state.pop("flash"))
@@ -220,6 +331,65 @@ def run_chat(iid, question):
     })
 
 
+@st.cache_data(max_entries=32)
+def cached_logits(image):
+    return what_if.compute_logits(catalog.sample_path(image))
+
+
+DEFAULT_THRESHOLD = 0.5
+DEFAULT_MIN_SIZE = 200
+
+
+def what_if_panel(image, result):
+    with st.expander("What-if: sensitivity settings"):
+        st.warning("Exploration only – not the recorded inspection. Nothing is saved.")
+        try:
+            threshold = st.slider(
+                "Probability threshold", 0.30, 0.80, DEFAULT_THRESHOLD, 0.05,
+                key=f"wi_thr_{image}",
+            )
+            min_size = st.slider(
+                "Minimum region (px at 128×128)", 50, 500, DEFAULT_MIN_SIZE, 25,
+                key=f"wi_min_{image}",
+            )
+            logits, original = cached_logits(image)
+            masks, findings = what_if.findings_at(
+                logits, original.shape[:2], threshold, min_size, MAPPING
+            )
+            overlay, _ = create_defect_overlay(original, masks, MAPPING)
+            diff = what_if.diff_findings(result["findings"], findings)
+        except Exception as error:
+            st.caption(f"What-if unavailable ({type(error).__name__})")
+            return
+
+        if (threshold, min_size) == (DEFAULT_THRESHOLD, DEFAULT_MIN_SIZE):
+            st.caption("At the recorded settings")
+        saved, current = st.columns(2)
+        saved.caption("Saved overlay")
+        path = overlay_file(result["inspection_id"])
+        if path:
+            saved.image(path, width="stretch")
+        current.caption("What-if overlay")
+        current.image(overlay, channels="BGR", width="stretch")
+        if diff:
+            st.dataframe(
+                [
+                    {
+                        "Class": d["class_name"],
+                        "Regions (recorded)": d["regions_recorded"],
+                        "Regions (what-if)": d["regions_what_if"],
+                        "Area % (recorded)": d["area_recorded"],
+                        "Area % (what-if)": d["area_what_if"],
+                        "Change": d["change"],
+                    }
+                    for d in diff
+                ],
+                hide_index=True, width="stretch",
+            )
+        else:
+            st.info("No detections in either run. This does not mean defect-free.")
+
+
 def detail(image, rows, filtered, flt):
     row = next(r for r in rows if r["image_id"] == image)
     iid = row["inspection_id"]
@@ -286,6 +456,8 @@ def detail(image, rows, filtered, flt):
             b.caption("Overlay")
             if overlay is not None:
                 b.image(overlay, channels=channels, width="stretch")
+
+        what_if_panel(image, result)
 
         st.subheader("QC agent")
         st.caption("Try an example question:")
@@ -379,6 +551,25 @@ def detail(image, rows, filtered, flt):
                     f"{h.get('reviewed_at', '')[:19]}  \n{h.get('note', '')}"
                 )
 
+        try:
+            saved_path = overlay_file(iid)
+            saved_overlay = cv2.imread(saved_path) if saved_path else None
+            record = build_record_html(
+                result, history, expected, FLAG_LABEL.get(row["flag"]),
+                original, saved_overlay,
+            )
+        except Exception as error:
+            st.caption(f"Record unavailable ({type(error).__name__})")
+        else:
+            st.download_button(
+                "Download inspection record", record,
+                file_name=f"inspection-record_{Path(image).stem}_{iid[:8]}.html",
+                mime="text/html", key=f"record_{iid}",
+            )
+            st.caption(
+                "Open the file and use your browser's Print to save it as PDF."
+            )
+
         with st.expander("Limitations"):
             for item in result.get("limitations", []):
                 st.write(f"• {item}")
@@ -404,5 +595,7 @@ image = st.query_params.get("image")
 if image in catalog.SAMPLE_FILES:
     filtered = rl.filter_rows(rows, flt["class"], flt["mismatch"], flt["status"])
     detail(image, rows, filtered, flt)
+elif st.query_params.get("view") == "dashboard":
+    dashboard(rows)
 else:
     overview(rows, flt, deployment)
