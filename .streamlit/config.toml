@@ -1,0 +1,14 @@
+[theme]
+base = "light"
+primaryColor = "#1f4e79"
+backgroundColor = "#f4f6f9"
+secondaryBackgroundColor = "#eef1f5"
+textColor = "#1d2433"
+font = "sans serif"
+baseRadius = "8px"
+borderColor = "#e1e5eb"
+linkColor = "#1f4e79"
+chartCategoricalColors = ["#1f4e79", "#4a86c5", "#a9cbe9", "#d9822b", "#f2c14e", "#d5dbe3"]
+
+[client]
+toolbarMode = "minimal"
