@@ -12,8 +12,8 @@ The AMP runs three tasks in order (see `.project-metadata.yaml`).
 
 | Name | Required | Default | Description |
 |---|---|---|---|
-| `QC_LLM_BASE_URL` | yes | – | Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1` |
-| `QC_LLM_MODEL` | no | `Qwen/Qwen2.5-7B-Instruct` | Model name served by the endpoint |
+| `QC_LLM_BASE_URL` | no | – | Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1` |
+| `QC_LLM_MODEL` | no | – | Model name served by the endpoint |
 | `QC_SHOW_DRAFT_GUIDANCE` | no | `0` | `1` shows unreviewed draft defect guidance in agent answers |
 
 The agent reads its access token from `/tmp/jwt`. Without `QC_LLM_BASE_URL` or that file, the agent answers "LLM not configured" and the rest of the app works.

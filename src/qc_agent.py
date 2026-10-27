@@ -117,12 +117,14 @@ def run_agent(prompt: str) -> dict:
         }
 
     base_url = os.getenv("QC_LLM_BASE_URL", "").strip()
-    if not base_url or not JWT_PATH.is_file():
+    model = os.getenv("QC_LLM_MODEL", "").strip()
+    if not base_url or not model or not JWT_PATH.is_file():
         return outcome(
             "not_configured",
             "LLM not configured. Set QC_LLM_BASE_URL to the Cloudera AI "
-            "Inference OpenAI-compatible base URL and make sure the session "
-            "token file is available. Inspections and review still work.",
+            "Inference OpenAI-compatible base URL, set QC_LLM_MODEL to the "
+            "served model name, and make sure the session token file is "
+            "available. Inspections and review still work.",
         )
 
     try:
@@ -172,9 +174,7 @@ def run_agent(prompt: str) -> dict:
                         }
 
                 response = client.chat.completions.create(
-                    model=os.getenv(
-                        "QC_LLM_MODEL", "Qwen/Qwen2.5-7B-Instruct"
-                    ),
+                    model = model,
                     messages=messages,
                     temperature=0,
                     max_tokens=768,
