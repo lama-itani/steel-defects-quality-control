@@ -33,7 +33,6 @@ product_mapping:                              # Cloudera products used
   - Cloudera AI (Workbench)
   - Cloudera AI Inference Service
 model_dependencies:                           # Models, embeddings, or external AI services
-  - Qwen/Qwen2.5-7B-Instruct                  # Default LLM for the QC agent; set with QC_LLM_MODEL
   - Unet.onnx                                 # U-Net (ResNet34 encoder) shipped in model/
 
 # --- Provenance ---

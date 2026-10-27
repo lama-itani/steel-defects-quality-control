@@ -1,5 +1,4 @@
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -45,10 +44,6 @@ class GuidanceTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.addCleanup(self.tmp.cleanup)
-        env = patch.dict(os.environ)
-        env.start()
-        self.addCleanup(env.stop)
-        os.environ.pop("QC_SHOW_DRAFT_GUIDANCE", None)
 
     def write(self, content, name="g.json"):
         path = Path(self.tmp.name) / name
@@ -100,27 +95,16 @@ class GuidanceTests(unittest.TestCase):
             ],
         )
 
-    def test_draft_hidden_by_default(self):
+    def test_draft_shown_by_default(self):
         document = make_document({"Scratches": "draft_pending_review"})
-        self.assert_unavailable(self.lookup(document, "Scratches"), "Scratches")
-
-    def test_draft_shown_with_flag(self):
-        document = make_document({"Scratches": "draft_pending_review"})
-        os.environ["QC_SHOW_DRAFT_GUIDANCE"] = "1"
         result = self.lookup(document, "Scratches")
 
         self.assertEqual(result["status"], "draft_pending_review")
         self.assertIsNotNone(result["guidance"])
         self.assertEqual(len(result["source"]), 2)
 
-    def test_flag_other_than_one_keeps_draft_hidden(self):
-        document = make_document({"Scratches": "draft_pending_review"})
-        os.environ["QC_SHOW_DRAFT_GUIDANCE"] = "true"
-        self.assert_unavailable(self.lookup(document, "Scratches"), "Scratches")
-
-    def test_flag_does_not_expose_unavailable_class(self):
+    def test_unavailable_class_stays_unavailable(self):
         document = make_document({"Patches": "guidance unavailable"})
-        os.environ["QC_SHOW_DRAFT_GUIDANCE"] = "1"
         self.assert_unavailable(self.lookup(document, "Patches"), "Patches")
 
     def test_unknown_class_raises(self):
@@ -175,11 +159,7 @@ class GuidanceTests(unittest.TestCase):
         self.assertEqual(set(loaded["classes"]), set(qc_tools.CLASSES))
         self.assertIsNotNone(qc_tools.GUIDANCE)
 
-    def test_real_file_default_hides_drafts_and_flag_shows_them(self):
-        self.assert_unavailable(
-            qc_tools.lookup_defect_guidance("Pitted surface"), "Pitted surface"
-        )
-        os.environ["QC_SHOW_DRAFT_GUIDANCE"] = "1"
+    def test_real_file_drafts_are_shown(self):
         draft = qc_tools.lookup_defect_guidance("Pitted surface")
         self.assertEqual(draft["status"], "draft_pending_review")
         self.assertTrue(draft["source"])

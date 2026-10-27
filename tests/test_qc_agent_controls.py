@@ -1,5 +1,4 @@
 import json
-import os
 import tempfile
 import unittest
 from pathlib import Path
@@ -15,7 +14,7 @@ INSPECTION = {
     "findings": [{"class_name": "Scratches"}],
 }
 
-patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
+
 def tool_response(name, arguments, count=1):
     calls = [
         SimpleNamespace(
@@ -75,7 +74,11 @@ class AgentControls(unittest.TestCase):
             with (
                 patch.object(agent, "OpenAI") as factory,
                 patch.object(agent, "JWT_PATH", jwt_path),
-                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
+                patch.object(
+                    agent.llm_config,
+                    "load",
+                    return_value=("https://llm.test/v1", "test-model"),
+                ),
                 patch.object(agent, "dispatch_tool", dispatcher),
             ):
                 factory.return_value.__enter__.return_value = client
@@ -91,7 +94,16 @@ class AgentControls(unittest.TestCase):
             with (
                 patch.object(agent, "OpenAI") as factory,
                 patch.object(agent, "JWT_PATH", jwt_path),
-                patch.dict(os.environ, {"QC_LLM_BASE_URL": ""}),
+                patch.object(agent.llm_config, "load", return_value=("", "test-model")),
+            ):
+                result = agent.run_agent("Retrieve the saved inspection.")
+                factory.assert_not_called()
+            self.assertEqual(result["status"], "not_configured")
+
+            with (
+                patch.object(agent, "OpenAI") as factory,
+                patch.object(agent, "JWT_PATH", jwt_path),
+                patch.object(agent.llm_config, "load", return_value=("https://llm.test/v1", "")),
             ):
                 result = agent.run_agent("Retrieve the saved inspection.")
                 factory.assert_not_called()
@@ -100,7 +112,11 @@ class AgentControls(unittest.TestCase):
             with (
                 patch.object(agent, "OpenAI") as factory,
                 patch.object(agent, "JWT_PATH", Path(directory) / "missing"),
-                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
+                patch.object(
+                    agent.llm_config,
+                    "load",
+                    return_value=("https://llm.test/v1", "test-model"),
+                ),
             ):
                 result = agent.run_agent("Retrieve the saved inspection.")
                 factory.assert_not_called()

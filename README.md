@@ -39,9 +39,9 @@ Limitations: masks and areas are approximate (training masks came from bounding 
 ## Quickstart / Guide
 
 1. In Cloudera AI, create a new project from this repository as an AMP.
-2. Enter `QC_LLM_BASE_URL`: the Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1`. Set `QC_LLM_MODEL` to your model name. Both can be found in Model Endpoint tab.
-3. Wait for the three tasks to finish: Install dependencies, Run baseline inspections, Steel Surface QC (the application).
-4. Open the Steel Surface QC application.
+2. Wait for the three tasks to finish: Install dependencies, Run baseline inspections, Steel Surface QC (the application).
+3. Open the Steel Surface QC application.
+4. In the sidebar under **LLM settings**, enter the Cloudera AI Inference OpenAI-compatible base URL (ending in `/openai/v1`) and the model name, both found in the Model Endpoint tab, then save. The settings are kept across restarts.
 
 Task details, environment variables and how to rerun are in [`deploy/README.md`](deploy/README.md).
 
@@ -94,8 +94,6 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 ## Documentation
 
 - [`deploy/README.md`](deploy/README.md) — the three AMP tasks, environment variables, rerunning
-- [`docs/review-ui.md`](docs/review-ui.md) — the review application
-- [`docs/step1-validation.md`](docs/step1-validation.md) — model validation and baseline
 - [`model/README.md`](model/README.md) — model card
 - [`data/README.md`](data/README.md) — the synthetic sample images and how they are made
 - [`extras/model-endpoint/README.md`](extras/model-endpoint/README.md) — optional endpoint and registry files

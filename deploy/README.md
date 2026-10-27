@@ -8,15 +8,11 @@ The AMP runs three tasks in order (see `.project-metadata.yaml`).
 | 2 | Run baseline inspections | `scripts/run_batch_inspections.py` | Inspects the 29 images and compares retained regions per class with the validated baseline |
 | 3 | Steel Surface QC | `app/start_app.py` | Starts the Streamlit review application (subdomain `steel-qc`) |
 
-## Environment variables
+## LLM settings
 
-| Name | Required | Default | Description |
-|---|---|---|---|
-| `QC_LLM_BASE_URL` | no | – | Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1` |
-| `QC_LLM_MODEL` | no | – | Model name served by the endpoint |
-| `QC_SHOW_DRAFT_GUIDANCE` | no | `0` | `1` shows unreviewed draft defect guidance in agent answers |
+The AMP asks for no environment variables. Set the Cloudera AI Inference base URL (ending in `/openai/v1`) and the model name in the app's **LLM settings** sidebar. They are saved in `outputs/llm_config.json` and take effect immediately. `QC_LLM_BASE_URL` and `QC_LLM_MODEL` are still read as a fallback when nothing is saved.
 
-The agent reads its access token from `/tmp/jwt`. Without `QC_LLM_BASE_URL` or that file, the agent answers "LLM not configured" and the rest of the app works.
+The agent reads its access token from `/tmp/jwt`. Without the settings or that file, the agent answers "LLM not configured" and the rest of the app works.
 
 ## Rerunning
 

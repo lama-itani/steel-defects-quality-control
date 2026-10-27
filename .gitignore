@@ -35,3 +35,6 @@ outputs/
 .bash_history
 
 !model/Unet.onnx
+
+# Dev tracking documents
+docs/
