@@ -1,9 +1,8 @@
 import json
-import os
 from pathlib import Path
 
 from openai import OpenAI
-from src import qc_tools
+from src import llm_config, qc_tools
 
 MAX_TOOL_CALLS = 4
 JWT_PATH = Path("/tmp/jwt")
@@ -116,15 +115,14 @@ def run_agent(prompt: str) -> dict:
             "report_status": "draft_for_human_review",
         }
 
-    base_url = os.getenv("QC_LLM_BASE_URL", "").strip()
-    model = os.getenv("QC_LLM_MODEL", "").strip()
+    base_url, model = llm_config.load()
     if not base_url or not model or not JWT_PATH.is_file():
         return outcome(
             "not_configured",
-            "LLM not configured. Set QC_LLM_BASE_URL to the Cloudera AI "
-            "Inference OpenAI-compatible base URL, set QC_LLM_MODEL to the "
-            "served model name, and make sure the session token file is "
-            "available. Inspections and review still work.",
+            "LLM not configured. Set the Cloudera AI Inference base URL and "
+            "the served model name in the app's LLM settings, and make sure "
+            "the session token file is available. Inspections and review "
+            "still work.",
         )
 
     try:

@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from src import catalog, review_logic as rl, review_store as rs, what_if
+from src import catalog, llm_config, review_logic as rl, review_store as rs, what_if
 from src.qc_agent import run_agent
 from src.report import build_record_html
 from src.visualization import CLASS_COLORS, create_defect_overlay
@@ -39,6 +39,33 @@ FLAG_LABEL = {
 
 st.set_page_config(page_title="Steel QC review", layout="wide")
 ui.inject_css()
+
+
+def llm_settings_sidebar():
+    saved_url, saved_model = llm_config.load()
+    with st.sidebar:
+        st.subheader("LLM settings")
+        with st.form("llm_settings"):
+            url = st.text_input(
+                "Base URL (ends in /openai/v1)", value=saved_url
+            )
+            model = st.text_input("Model name", value=saved_model)
+            submitted = st.form_submit_button("Save")
+        if submitted:
+            try:
+                llm_config.save(url, model)
+            except ValueError as error:
+                st.error(str(error))
+            else:
+                st.success("Saved")
+                saved_url, saved_model = llm_config.load()
+        configured = bool(saved_url and saved_model)
+        st.caption(
+            "Agent: configured" if configured else "Agent: not configured"
+        )
+
+
+llm_settings_sidebar()
 
 
 @st.cache_data(ttl=60)

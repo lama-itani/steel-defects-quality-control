@@ -8,21 +8,6 @@ specification_version: 1.0
 prototype_version: 1.0
 date: "2026-10-19"
 
-environment_variables:
-  QC_LLM_BASE_URL:
-    default: ""
-    description: >-
-      Cloudera AI Inference OpenAI-compatible base URL, ending in /openai/v1
-    required: false
-  QC_LLM_MODEL:
-    default: ""
-    description: "Model name served by the Cloudera AI Inference endpoint"
-    required: false
-  QC_SHOW_DRAFT_GUIDANCE:
-    default: "0"
-    description: "Set to 1 to show unreviewed draft defect guidance"
-    required: false
-
 runtimes:
   - editor: JupyterLab
     kernel: Python 3.10

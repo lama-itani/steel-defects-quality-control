@@ -1,5 +1,4 @@
 import json
-import os
 import re
 from pathlib import Path
 
@@ -129,10 +128,7 @@ def lookup_defect_guidance(defect_class: str) -> dict:
 
     entry = GUIDANCE["classes"][defect_class]
     status = entry["status"]
-    if status == "draft_pending_review":
-        if os.environ.get("QC_SHOW_DRAFT_GUIDANCE") != "1":
-            return _unavailable(defect_class)
-    elif status != "approved":
+    if status not in ("approved", "draft_pending_review"):
         return _unavailable(defect_class)
 
     sources = []
