@@ -39,7 +39,7 @@ Limitations: masks and areas are approximate (training masks came from bounding 
 ## Quickstart / Guide
 
 1. In Cloudera AI, create a new project from this repository as an AMP.
-2. Enter `QC_LLM_BASE_URL`: the Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1`. Optionally set `QC_LLM_MODEL` (default `Qwen/Qwen2.5-7B-Instruct`).
+2. Enter `QC_LLM_BASE_URL`: the Cloudera AI Inference OpenAI-compatible base URL, ending in `/openai/v1`. Set `QC_LLM_MODEL` to your model name. Both can be found in Model Endpoint tab.
 3. Wait for the three tasks to finish: Install dependencies, Run baseline inspections, Steel Surface QC (the application).
 4. Open the Steel Surface QC application.
 
@@ -78,7 +78,6 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 | `extras/model-endpoint/` | Optional CML Model endpoint and registry files, not used by the AMP |
 | `METADATA.yaml` | Catalog metadata for the Cloudera blueprint website |
 | `.project-metadata.yaml` | AMP definition |
-| `THIRD_PARTY_NOTICES.md` | Provenance of the model and dataset |
 
 ## Prerequisites
 
@@ -100,4 +99,3 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 - [`model/README.md`](model/README.md) — model card
 - [`data/README.md`](data/README.md) — the synthetic sample images and how they are made
 - [`extras/model-endpoint/README.md`](extras/model-endpoint/README.md) — optional endpoint and registry files
-- [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md) — provenance and licence status

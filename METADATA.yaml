@@ -42,12 +42,12 @@ source: Internal                              # Internal | Partner | NVIDIA Adap
 
 # --- Repository & assets ---
 public_github_link: ""                        # TODO
-#private_github_link: ""                      # If applicable, original repo during development
+#private_github_link: "https://github.com/lama-itani/steel-defects-quality-control"   # Original repo during development
 
 # --- Ownership ---
-maintainer_name: ""                           # TODO
+maintainer_name: "Lama Itani"                  
 
 # --- Dates ---
-date_created: ""                              # TODO
-date_updated: ""                              # TODO
+date_created: "15 Sept 2026"                              # TODO
+date_updated: "27 Oct 2026"                              # TODO
 published_date: ""                            # TODO

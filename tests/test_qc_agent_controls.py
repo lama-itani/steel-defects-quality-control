@@ -15,7 +15,7 @@ INSPECTION = {
     "findings": [{"class_name": "Scratches"}],
 }
 
-
+patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
 def tool_response(name, arguments, count=1):
     calls = [
         SimpleNamespace(
@@ -75,7 +75,7 @@ class AgentControls(unittest.TestCase):
             with (
                 patch.object(agent, "OpenAI") as factory,
                 patch.object(agent, "JWT_PATH", jwt_path),
-                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1"}),
+                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
                 patch.object(agent, "dispatch_tool", dispatcher),
             ):
                 factory.return_value.__enter__.return_value = client
@@ -100,7 +100,7 @@ class AgentControls(unittest.TestCase):
             with (
                 patch.object(agent, "OpenAI") as factory,
                 patch.object(agent, "JWT_PATH", Path(directory) / "missing"),
-                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1"}),
+                patch.dict(os.environ, {"QC_LLM_BASE_URL": "https://llm.test/v1", "QC_LLM_MODEL": "test-model"}),
             ):
                 result = agent.run_agent("Retrieve the saved inspection.")
                 factory.assert_not_called()
