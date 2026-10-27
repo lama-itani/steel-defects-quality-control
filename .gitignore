@@ -35,3 +35,4 @@ outputs/
 .bash_history
 
 !model/Unet.onnx
+docs/
