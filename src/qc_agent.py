@@ -133,7 +133,7 @@ def run_agent(prompt: str) -> dict:
         with OpenAI(
             base_url=base_url,
             api_key=token,
-            timeout=30.0,
+            timeout=120.0,
             max_retries=0,
         ) as client:
             for _ in range(MAX_TOOL_CALLS + 1):
