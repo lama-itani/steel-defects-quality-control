@@ -39,7 +39,7 @@ BADGES = {
 _CSS = Template("""
 <style>
 [data-testid="stMainBlockContainer"], .block-container {
-    max-width: 1280px; padding-top: 1.5rem;
+    max-width: 1280px; padding-top: 4.5rem;
 }
 [data-testid="stMainBlockContainer"] h1 {
     font-size: 2rem !important; font-weight: 700 !important;

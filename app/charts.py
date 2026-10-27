@@ -60,7 +60,9 @@ def stacked_hbar(rows, domain, colors, labels, text_colors=None, height=230):
 
     y = alt.Y(
         "Class:N", sort=classes,
-        axis=alt.Axis(title=None, labelLimit=150, labelAngle=0),
+        axis=alt.Axis(
+            title=None, labelLimit=150, labelAngle=0, minExtent=110
+        ),
     )
     legend_labels = f"{json.dumps(labels)}[datum.label]"
     bars = alt.Chart(df).mark_bar(size=22).encode(
