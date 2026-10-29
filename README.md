@@ -49,7 +49,7 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 
 ### Demo architecture
 
-![Demo architecture](assets/architecture.svg)
+![Demo architecture](assets/architecture-demo.svg)
 
 ### Target architecture
 
