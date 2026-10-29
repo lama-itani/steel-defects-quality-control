@@ -1,9 +1,5 @@
 """Generate synthetic hot-rolled steel surface defect images.
 
-Fully procedural: no NEU (or any other) images are used as input.
-Parameters were tuned so the project's U-Net ONNX model recognises each
-defect type, then checked visually for plausibility.
-
 Output (flat, matching the app's naming rule `<class>_<n>.jpg`):
     <out>/<class>_<n>.jpg     200x200 grayscale JPEG
     <out>/labels/<class>_<n>.txt   YOLO boxes: class cx cy w h (normalised)
