@@ -20,7 +20,7 @@ Steel Surface QC is a Cloudera AI Applied ML Prototype (AMP) that inspects image
 
 ## Demo
 
-Reprise demo: TODO — not yet recorded.
+Reprise demo: [`link`](https://app.getreprise.com/present/D6lw5zy)
 
 ## Use Case
 
@@ -47,7 +47,17 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 
 ## Architecture / Software Components
 
-![Architecture](assets/architecture.svg)
+### Demo architecture
+
+![Demo architecture](assets/architecture.svg)
+
+### Target architecture
+
+How the demo maps onto a production setup on Cloudera. Components with an **IN DEMO** badge run in the AMP today; everything else is a target design and has not been built or validated. The editable source is [`assets/architecture-target.drawio`](assets/architecture-target.drawio).
+
+![Target architecture](assets/architecture-target.svg)
+
+### Software components
 
 - **ONNX Runtime (CPU)** runs `model/Unet.onnx` (U-Net, ResNet34 encoder) inside the application process.
 - **`src/`** holds preprocessing, inference, postprocessing, overlay rendering, the inspection pipeline, the review store, and the QC agent and its tools.
@@ -73,7 +83,7 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 | `scripts/` | Baseline batch inspections and the sample image generator |
 | `deploy/` | AMP install task and notes |
 | `tests/` | Unit and model contract tests |
-| `assets/` | Architecture diagram |
+| `assets/` | Demo and target architecture diagrams (`.svg`, target also as `.drawio`) |
 | `docs/` | User docs; `docs/dev-notes/` keeps development plans |
 | `extras/model-endpoint/` | Optional CML Model endpoint and registry files, not used by the AMP |
 | `METADATA.yaml` | Catalog metadata for the Cloudera blueprint website |
@@ -89,7 +99,7 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 | Deployment | Minimum |
 | --- | --- |
 | Launchable / demo | 2 vCPU, 4 GB RAM, CPU only, about 1 GB free disk (per `.project-metadata.yaml`) |
-| Production / enterprise | TODO — not sized; this is a demonstration and not validated for production use |
+| Production / enterprise | not sized; this is a demonstration and not validated for production use |
 
 ## Documentation
 

@@ -27,10 +27,7 @@ outputs/
 .lesshst
 .ssh
 
-# Cloudera / MLflow registry environments and runtime state
-.venv-registry/
-.venv-conflicted-phase4/
-.venv-restored/
+# Cloudera / MLflow runtime state (registry venvs are covered by .venv*/)
 .experiments/
 .bash_history
 

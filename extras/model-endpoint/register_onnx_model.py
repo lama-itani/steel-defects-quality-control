@@ -17,7 +17,7 @@ def main():
     # Optional CLI arg lets you label the run (e.g. a workbench/host name);
     # defaults to a timestamp so it never collides on repeat runs.
     run_label = sys.argv[1] if len(sys.argv) > 1 else time.strftime("%Y-%m-%d-%H%M%S")
-    run_name = f"single-file-retry-{run_label}"
+    run_name = f"register-onnx-{run_label}"
 
     mlflow.set_experiment(EXPERIMENT_NAME)
 

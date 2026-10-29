@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2000 1080" width="2000" height="1080" font-family="Helvetica, Arial, sans-serif">
+<title>Steel Surface QC AI — Target Architecture on Cloudera</title>
+<defs>
+<marker id="g" viewBox="0 0 12 10" refX="11" refY="5" markerWidth="17" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,5 L0,10 z" fill="#5b6577"/></marker>
+<marker id="o" viewBox="0 0 12 10" refX="11" refY="5" markerWidth="17" markerHeight="14" markerUnits="userSpaceOnUse" orient="auto-start-reverse"><path d="M0,0 L12,5 L0,10 z" fill="#e8711a"/></marker>
+</defs>
+<rect width="2000" height="1080" fill="#f7f8fa"/>
+<rect x="325" y="125" width="1635" height="712" rx="30" fill="#ffffff" stroke="#e8711a" stroke-width="3.5"/>
+<rect x="40" y="230" width="250" height="100" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="165.0" y="270" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">Line-scan cameras</tspan></text>
+<text x="165.0" y="302" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">hot-strip mill images</tspan></text>
+<rect x="40" y="348" width="250" height="100" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="165.0" y="388" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">MES / QMS</tspan></text>
+<text x="165.0" y="420" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">coil ID · grade · heat no.</tspan></text>
+<rect x="40" y="466" width="250" height="100" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="165.0" y="506" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">Process historian</tspan></text>
+<text x="165.0" y="538" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">roll speed · temperature</tspan></text>
+<rect x="40" y="584" width="250" height="100" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="165.0" y="624" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">Reference files</tspan></text>
+<text x="165.0" y="656" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">defect guidance · SOPs</tspan></text>
+<rect x="360" y="230" width="365" height="155" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="542.5" y="272" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Cloudera DataFlow · NiFi</tspan></text>
+<text x="542.5" y="310" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">MiNiFi at the mill edge</tspan></text>
+<text x="542.5" y="344" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">images + coil metadata → Kafka</tspan></text>
+<rect x="760" y="230" width="365" height="155" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="942.5" y="272" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Open Data Lakehouse</tspan></text>
+<text x="942.5" y="310" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">images · masks on Ozone / S3</tspan></text>
+<text x="942.5" y="344" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">Iceberg: inspections · reviews</tspan></text>
+<rect x="1160" y="230" width="365" height="155" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="1342.5" y="272" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Cloudera Data Engineering</tspan></text>
+<text x="1342.5" y="310" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">Spark batch re-inspection</tspan></text>
+<text x="1342.5" y="344" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">verdicts → training sets</tspan></text>
+<rect x="1560" y="230" width="365" height="155" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="1742.5" y="272" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">CML Jobs · Model Registry</tspan></text>
+<text x="1742.5" y="310" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">fine-tune U-Net on GPU → ONNX</tspan></text>
+<text x="1742.5" y="344" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">SHA-256 check → register</tspan></text>
+<rect x="360" y="470" width="990" height="200" rx="18" fill="#fbf0e6" stroke="#d9a77c" stroke-width="2.5"/>
+<rect x="385" y="537" width="170" height="110" rx="12" fill="#ffffff" stroke="#d9a77c" stroke-width="2"/>
+<text x="470.0" y="579" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Inspect</tspan></text>
+<text x="470.0" y="613" text-anchor="middle"><tspan font-size="15" font-weight="normal" fill="#4b5563">masks + defect class</tspan></text>
+<rect x="577" y="537" width="170" height="110" rx="12" fill="#ffffff" stroke="#d9a77c" stroke-width="2"/>
+<text x="662.0" y="579" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Review</tspan></text>
+<text x="662.0" y="613" text-anchor="middle"><tspan font-size="15" font-weight="normal" fill="#4b5563">verdict + notes</tspan></text>
+<rect x="769" y="537" width="170" height="110" rx="12" fill="#ffffff" stroke="#d9a77c" stroke-width="2"/>
+<text x="854.0" y="579" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">What-if</tspan></text>
+<text x="854.0" y="613" text-anchor="middle"><tspan font-size="15" font-weight="normal" fill="#4b5563">threshold · min size</tspan></text>
+<rect x="961" y="537" width="170" height="110" rx="12" fill="#ffffff" stroke="#d9a77c" stroke-width="2"/>
+<text x="1046.0" y="579" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Ask agent</tspan></text>
+<text x="1046.0" y="613" text-anchor="middle"><tspan font-size="15" font-weight="normal" fill="#4b5563">≤ 4 tool calls</tspan></text>
+<rect x="1153" y="537" width="170" height="110" rx="12" fill="#ffffff" stroke="#d9a77c" stroke-width="2"/>
+<text x="1238.0" y="579" text-anchor="middle"><tspan font-size="22" font-weight="bold" fill="#1f2937">Feedback</tspan></text>
+<text x="1238.0" y="613" text-anchor="middle"><tspan font-size="15" font-weight="normal" fill="#4b5563">disagree → relabel</tspan></text>
+<rect x="1440" y="470" width="485" height="200" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="1682.5" y="512" text-anchor="middle"><tspan font-size="24" font-weight="bold" fill="#1f2937">Cloudera AI Inference</tspan></text>
+<text x="1682.5" y="550" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">U-Net ONNX endpoint · Triton / NIM</tspan></text>
+<text x="1682.5" y="583" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">agent LLM · OpenAI-compatible API</tspan></text>
+<text x="1682.5" y="616" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">Monitoring: drift · latency · disagree rate</tspan></text>
+<rect x="360" y="723" width="1565" height="84" rx="14" fill="#edf1f8" stroke="#8b9bb4" stroke-width="2"/>
+<text x="1142.5" y="773" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">SDX</tspan><tspan font-size="20" font-weight="normal" fill="#1f2937"> — Atlas: lineage image → inspection → verdict → model · Ranger: ACLs · Knox: perimeter · audit of human verdicts</tspan></text>
+<rect x="420" y="920" width="485" height="110" rx="18" fill="#fbf0e6" stroke="#e8711a" stroke-width="3"/>
+<text x="662.5" y="964" text-anchor="middle"><tspan font-size="24" font-weight="bold" fill="#1f2937">Quality engineers · line operators</tspan></text>
+<text x="662.5" y="1000" text-anchor="middle"><tspan font-size="19" font-weight="normal" fill="#4b5563">triage flagged coils · ask the agent</tspan></text>
+<rect x="40" y="920" width="250" height="110" rx="14" fill="#ffffff" stroke="#94a3b8" stroke-width="2"/>
+<text x="165.0" y="964" text-anchor="middle"><tspan font-size="21" font-weight="bold" fill="#1f2937">MES / QMS</tspan></text>
+<text x="165.0" y="997" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">coil hold · release</tspan></text>
+<rect x="950" y="905" width="1010" height="140" rx="14" fill="#ffffff" stroke="#c8ced8" stroke-width="2"/>
+<text x="1455.0" y="939" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">Demo today → Cloudera: generator → DataFlow · data/ → Ozone · outputs/ → Iceberg</tspan></text>
+<text x="1455.0" y="969" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">run_batch_inspections.py → CDE · in-app ONNX → AI Inference · Streamlit → AI Application</tspan></text>
+<text x="1455.0" y="999" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">Dashed orange = model lifecycle: retrain → register → deploy</tspan></text>
+<text x="1455.0" y="1029" text-anchor="middle"><tspan font-size="18" font-weight="normal" fill="#4b5563">Green IN DEMO badge = runs in the AMP today · everything else is the target, not built</tspan></text>
+<text x="1000" y="50" text-anchor="middle" font-size="36" font-weight="bold" fill="#1f2937">Steel Surface QC AI — Target Architecture on Cloudera</text>
+<text x="1000" y="90" text-anchor="middle" font-size="21" font-weight="normal" fill="#4b5563">Mill cameras stream surface images, a U-Net model segments defects, engineers review, and a QC agent answers questions about the saved evidence</text>
+<text x="358" y="172" text-anchor="start" font-size="27" font-weight="bold" fill="#e8711a">Cloudera Data Platform — on-prem or public cloud (CPU demo · NVIDIA GPU at scale)</text>
+<text x="165" y="213" text-anchor="middle" font-size="19" font-weight="bold" fill="#4b5563" letter-spacing="2">SOURCES</text>
+<text x="360" y="213" text-anchor="start" font-size="19" font-weight="bold" fill="#4b5563" letter-spacing="2.5">DATA &amp; MODEL PIPELINE — INGEST, STORE, BATCH, TRAIN</text>
+<text x="388" y="513" text-anchor="start" font-size="23" font-weight="bold" fill="#1f2937">Cloudera AI — Steel QC Review App + QC Agent (Application)</text>
+<text x="962" y="434" text-anchor="start" font-size="19" font-weight="normal" fill="#4b5563">inspections · verdicts</text>
+<text x="1394" y="568" text-anchor="middle" font-size="16" font-weight="normal" fill="#4b5563">API calls</text>
+<text x="356" y="1003" text-anchor="middle" font-size="16" font-weight="normal" fill="#4b5563">human</text>
+<text x="356" y="1023" text-anchor="middle" font-size="16" font-weight="normal" fill="#4b5563">decision only</text>
+<text x="1456" y="416" text-anchor="middle" font-size="19" font-weight="normal" fill="#e8711a">retrain job</text>
+<text x="1762" y="434" text-anchor="start" font-size="19" font-weight="normal" fill="#e8711a">deploy</text>
+<text x="1612" y="702" text-anchor="start" font-size="19" font-weight="normal" fill="#e8711a">promotions audited</text>
+<polyline points="290,280 308,280" fill="none" stroke="#5b6577" stroke-width="2"/>
+<polyline points="290,398 308,398" fill="none" stroke="#5b6577" stroke-width="2"/>
+<polyline points="290,516 308,516" fill="none" stroke="#5b6577" stroke-width="2"/>
+<polyline points="290,634 308,634" fill="none" stroke="#5b6577" stroke-width="2"/>
+<polyline points="308,280 308,634" fill="none" stroke="#5b6577" stroke-width="2"/>
+<polyline points="308,307 358,307" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="725,307 758,307" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="1125,307 1158,307" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="1525,307 1558,307" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="555,592 576,592" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="747,592 768,592" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="939,592 960,592" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="1131,592 1152,592" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="942,385 942,468" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)" marker-start="url(#g)"/>
+<polyline points="1350,592 1438,592" fill="none" stroke="#5b6577" stroke-width="3.5" marker-end="url(#g)"/>
+<polyline points="480,920 480,672" fill="none" stroke="#5b6577" stroke-width="3" marker-end="url(#g)"/>
+<polyline points="420,975 292,975" fill="none" stroke="#5b6577" stroke-width="2.5" marker-end="url(#g)"/>
+<polyline points="1238,470 1238,428 1620,428 1620,387" fill="none" stroke="#e8711a" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#o)"/>
+<polyline points="1740,385 1740,468" fill="none" stroke="#e8711a" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#o)"/>
+<polyline points="1590,670 1590,721" fill="none" stroke="#e8711a" stroke-width="3" stroke-dasharray="9 7" marker-end="url(#o)"/>
+<rect x="456" y="524" width="85" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="498.5" y="542" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">IN DEMO</text>
+<rect x="648" y="524" width="85" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="690.5" y="542" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">IN DEMO</text>
+<rect x="840" y="524" width="85" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="882.5" y="542" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">IN DEMO</text>
+<rect x="1032" y="524" width="85" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1074.5" y="542" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">IN DEMO</text>
+<rect x="191" y="571" width="85" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="233.5" y="589" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">IN DEMO</text>
+<rect x="1790" y="457" width="121" height="26" rx="13" fill="#dcfce7" stroke="#16a34a" stroke-width="1.5"/>
+<text x="1850.5" y="475" text-anchor="middle" font-size="13" font-weight="bold" fill="#166534" letter-spacing="1">LLM IN DEMO</text>
+</svg>
