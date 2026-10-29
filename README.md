@@ -49,11 +49,11 @@ Task details, environment variables and how to rerun are in [`deploy/README.md`]
 
 ### Demo architecture
 
-![Demo architecture](assets/architecture.svg)
+![Demo architecture](assets/architecture-demo.svg)
 
 ### Target architecture
 
-How the demo maps onto a production setup on Cloudera. Components with an **IN DEMO** badge run in the AMP today; everything else is a target design and has not been built or validated. The editable source is [`assets/architecture-target.drawio`](assets/architecture-target.drawio).
+How the demo maps onto a production setup on Cloudera. Components with an **IN DEMO** badge run in the AMP today; everything else is a target design and has not been built or validated.
 
 ![Target architecture](assets/architecture-target.svg)
 
