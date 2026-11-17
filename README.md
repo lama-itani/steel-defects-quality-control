@@ -1,6 +1,10 @@
-
-
 # Cloudera Blueprint: Steel Surface Defect Quality Control
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10-blue.svg)](requirements.txt)
+[![Cloudera Blueprint](https://img.shields.io/badge/Cloudera-Blueprint-f96702.svg)](METADATA.yaml)
+
+
 
 <p align="center">
   <img src="data/logo/image.png" alt="Steel Defects Quality Control logo" width="500">
