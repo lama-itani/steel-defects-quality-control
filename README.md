@@ -1,4 +1,10 @@
+
+
 # Cloudera Blueprint: Steel Surface Defect Quality Control
+
+<p align="center">
+  <img src="data/logo/image.png" alt="Steel Defects Quality Control logo" width="500">
+</p>
 
 ## Table of Contents
 
@@ -107,3 +113,11 @@ How the demo maps onto a production setup on Cloudera. Components with an **IN D
 - [`model/README.md`](model/README.md) — model card
 - [`data/README.md`](data/README.md) — the synthetic sample images and how they are made
 - [`extras/model-endpoint/README.md`](extras/model-endpoint/README.md) — optional endpoint and registry files
+
+## License
+
+This project is licensed under the [Apache License 2.0](LICENSE).
+
+## Disclaimer
+
+*This blueprint is intended for Proof-of-Concept and research use only. It is not designed for production deployment. Use in production environments is at the user's own risk. The authors and contributors accept no liability for operational impacts or damages.*
